@@ -1,0 +1,14 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Order Success{% endblock %}
+
+{% block content %}
+    <h1>Payment Successful</h1>
+
+    <p>Thank you, {{ order.customer_name }}.</p>
+    <p><strong>Order ID:</strong> {{ order.id }}</p>
+    <p><strong>Total Amount:</strong> RM {{ order.total_amount }}</p>
+    <p><strong>Payment Status:</strong> {{ order.payment_status }}</p>
+
+    <a href="/products/" class="btn">Back to Products</a>
+{% endblock %}

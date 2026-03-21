@@ -1,0 +1,93 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Product Detail{% endblock %}
+
+{% block content %}
+<div style="display:flex; gap:30px; flex-wrap:wrap; align-items:flex-start;">
+
+    <div style="flex:1; min-width:280px; text-align:center;">
+        {% if product.image %}
+            <img src="{{ product.image.url }}" alt="{{ product.name }}"
+                 style="width: 280px; height: 280px; object-fit: contain; border-radius: 12px;">
+        {% else %}
+            <img src="https://via.placeholder.com/280" alt="No image"
+                 style="width: 280px; height: 280px; object-fit: contain; border-radius: 12px;">
+        {% endif %}
+    </div>
+
+    <div style="flex:2; min-width:300px;">
+        <h1>{{ product.name }}</h1>
+
+        <p>{{ product.description }}</p>
+
+        {% if product.avg_rating %}
+            <p style="color:#f4b400; font-size:22px; margin: 10px 0;">
+                {% if product.avg_rating >= 1 %}★{% else %}☆{% endif %}
+                {% if product.avg_rating >= 2 %}★{% else %}☆{% endif %}
+                {% if product.avg_rating >= 3 %}★{% else %}☆{% endif %}
+                {% if product.avg_rating >= 4 %}★{% else %}☆{% endif %}
+                {% if product.avg_rating >= 5 %}★{% else %}☆{% endif %}
+                <span style="color:#555; font-size:15px;">({{ product.avg_rating|floatformat:1 }})</span>
+            </p>
+        {% else %}
+            <p style="color:#999;">No ratings yet</p>
+        {% endif %}
+
+        <p style="font-size: 30px; font-weight: bold;">RM {{ product.price }}</p>
+
+        {% if product.stock > 0 %}
+            <p style="color: green; font-weight: 600;">Available Stock: {{ product.stock }}</p>
+            <a href="/products/{{ product.id }}/buy/" class="btn">Buy Now</a>
+        {% else %}
+            <p style="color: red; font-weight: bold;">Out of Stock</p>
+            <button class="btn" style="background-color: gray; cursor:not-allowed;" disabled>Unavailable</button>
+        {% endif %}
+
+        <a href="/products/" class="btn">Back to Products</a>
+    </div>
+</div>
+
+<hr style="margin: 30px 0;">
+
+<h2>Ratings</h2>
+
+{% for rating in ratings %}
+    <div class="product-card">
+        <p><strong>{{ rating.customer_name }}</strong> -
+            <span style="color:#f4b400;">
+                {% if rating.stars >= 1 %}★{% else %}☆{% endif %}
+                {% if rating.stars >= 2 %}★{% else %}☆{% endif %}
+                {% if rating.stars >= 3 %}★{% else %}☆{% endif %}
+                {% if rating.stars >= 4 %}★{% else %}☆{% endif %}
+                {% if rating.stars >= 5 %}★{% else %}☆{% endif %}
+            </span>
+        </p>
+        <p>{{ rating.comment }}</p>
+    </div>
+{% empty %}
+    <p>No ratings yet.</p>
+{% endfor %}
+
+<h3>Add Rating</h3>
+
+<form method="post" action="/products/{{ product.id }}/rate/">
+    {% csrf_token %}
+
+    <label>Your Name:</label><br>
+    <input type="text" name="customer_name" required><br>
+
+    <label>Stars:</label><br>
+    <div style="display:flex; gap:10px; margin-bottom:15px; font-size:26px; color:#f4b400;">
+        <label><input type="radio" name="stars" value="1" required> ★</label>
+        <label><input type="radio" name="stars" value="2"> ★★</label>
+        <label><input type="radio" name="stars" value="3"> ★★★</label>
+        <label><input type="radio" name="stars" value="4"> ★★★★</label>
+        <label><input type="radio" name="stars" value="5"> ★★★★★</label>
+    </div>
+
+    <label>Comment:</label><br>
+    <input type="text" name="comment" required><br>
+
+    <button type="submit" class="btn">Submit Rating</button>
+</form>
+{% endblock %}

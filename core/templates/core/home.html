@@ -1,0 +1,72 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+
+<div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap;">
+
+    <!-- LEFT SIDE -->
+    <div style="max-width: 500px;">
+        <div style="
+    background: linear-gradient(to right, #1f4e79, #2c6ca6);
+    padding: 20px;
+    border-radius: 10px;
+    color: white;
+    display: inline-block;
+    margin-bottom: 15px;
+">
+    <h1 style="font-size: 36px; margin: 0;">
+        Smart <span style="color:#ffd700;">E-Commerce</span> & Inventory System
+    </h1>
+</div>
+
+        <p style="font-size: 18px; color: #444; margin-top: 10px;">
+            A modern platform for seamless product management, real-time inventory tracking,
+            and efficient online purchasing.
+        </p>
+
+        <br>
+
+        <a href="/products/" class="btn" style="font-size:16px;">
+            Browse Products
+        </a>
+    </div>
+
+    <!-- RIGHT SIDE (IMAGE) -->
+    <div>
+        <img src="https://cdn-icons-png.flaticon.com/512/3081/3081559.png"
+             alt="Ecommerce Illustration"
+             style="width: 300px;">
+    </div>
+
+</div>
+
+<br><br>
+
+<hr>
+
+<br>
+
+<h2 style="text-align:center;">Why This System?</h2>
+
+<div style="display: flex; justify-content: space-around; flex-wrap: wrap; text-align: center;">
+
+    <div style="max-width: 250px;">
+        <h3>📦 Inventory Control</h3>
+        <p>Real-time stock updates after each successful purchase.</p>
+    </div>
+
+    <div style="max-width: 250px;">
+        <h3>💳 Checkout System</h3>
+        <p>Simple and efficient order and payment workflow.</p>
+    </div>
+
+    <div style="max-width: 250px;">
+        <h3>⭐ Customer Feedback</h3>
+        <p>Product ratings help improve user trust and decision-making.</p>
+    </div>
+
+</div>
+
+{% endblock %}
