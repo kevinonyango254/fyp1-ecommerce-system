@@ -14,6 +14,7 @@ from .views import (
     payment_page,
     process_payment,
     add_rating,
+    delete_rating,
     order_success,
     order_detail,
     admin_dashboard,
@@ -21,6 +22,10 @@ from .views import (
     add_product,
     edit_product,
     delete_product,
+    admin_advertisements,
+    add_advertisement,
+    edit_advertisement,
+    delete_advertisement,
     approve_order,
     reject_order,
     confirm_received,
@@ -37,6 +42,7 @@ urlpatterns = [
     path('products/<int:product_id>/buy/', buy_product, name='buy_product'),
     path('products/<int:product_id>/rate/', add_rating, name='add_rating'),
     path('products/<int:product_id>/add-to-cart/', add_to_cart, name='add_to_cart'),
+    path('ratings/delete/<int:rating_id>/', delete_rating, name='delete_rating'),
 
     path('cart/', view_cart, name='view_cart'),
     path('cart/increase/<int:item_id>/', increase_cart_item, name='increase_cart_item'),
@@ -55,6 +61,12 @@ urlpatterns = [
     path('admin-products/add/', add_product, name='add_product'),
     path('admin-products/edit/<int:product_id>/', edit_product, name='edit_product'),
     path('admin-products/delete/<int:product_id>/', delete_product, name='delete_product'),
+
+    path('admin-advertisements/', admin_advertisements, name='admin_advertisements'),
+    path('admin-advertisements/add/', add_advertisement, name='add_advertisement'),
+    path('admin-advertisements/edit/<int:advertisement_id>/', edit_advertisement, name='edit_advertisement'),
+    path('admin-advertisements/delete/<int:advertisement_id>/', delete_advertisement, name='delete_advertisement'),
+
     path('admin-dashboard/approve/<int:order_id>/', approve_order, name='approve_order'),
     path('admin-dashboard/reject/<int:order_id>/', reject_order, name='reject_order'),
 

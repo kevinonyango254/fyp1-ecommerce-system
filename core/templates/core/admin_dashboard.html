@@ -4,7 +4,12 @@
 
 {% block content %}
 <h2 style="margin-bottom: 10px;">Admin Dashboard</h2>
-<p style="color: #555; margin-bottom: 25px;">Manage customer orders, view purchased items, and control workflow status.</p>
+<p style="color: #555; margin-bottom: 20px;">Manage customer orders, view purchased items, and control workflow status.</p>
+
+<div style="display: flex; gap: 14px; flex-wrap: wrap; margin-bottom: 28px;">
+    <a href="/admin-products/" class="btn">Manage Products</a>
+    <a href="/admin-advertisements/" class="btn">Manage Advertisements</a>
+</div>
 
 {% if orders %}
     <div style="overflow-x: auto;">

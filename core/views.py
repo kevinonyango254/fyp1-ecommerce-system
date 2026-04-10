@@ -38,8 +38,11 @@ def product_detail(request, product_id):
 
     can_rate = False
     already_rated = False
+    is_admin = False
 
     if request.user.is_authenticated:
+        is_admin = request.user.userprofile.role == 'admin'
+
         purchased = OrderItem.objects.filter(
             product=product,
             order__user=request.user,
@@ -57,7 +60,8 @@ def product_detail(request, product_id):
         'product': product,
         'ratings': ratings,
         'can_rate': can_rate,
-        'already_rated': already_rated
+        'already_rated': already_rated,
+        'is_admin': is_admin,
     })
 
 
@@ -270,6 +274,18 @@ def add_rating(request, product_id):
 
 
 @login_required
+def delete_rating(request, rating_id):
+    if request.user.userprofile.role != 'admin':
+        return redirect('home')
+
+    rating = get_object_or_404(Rating, id=rating_id)
+    product_id = rating.product.id
+    rating.delete()
+
+    return redirect('product_detail', product_id=product_id)
+
+
+@login_required
 def admin_dashboard(request):
     if request.user.userprofile.role != 'admin':
         return redirect('home')
@@ -348,6 +364,75 @@ def delete_product(request, product_id):
     product = get_object_or_404(Product, id=product_id)
     product.delete()
     return redirect('admin_products')
+
+
+@login_required
+def admin_advertisements(request):
+    if request.user.userprofile.role != 'admin':
+        return redirect('home')
+
+    advertisements = Advertisement.objects.all().order_by('-created_at')
+    return render(request, 'core/admin_advertisements.html', {'advertisements': advertisements})
+
+
+@login_required
+def add_advertisement(request):
+    if request.user.userprofile.role != 'admin':
+        return redirect('home')
+
+    if request.method == 'POST':
+        title = request.POST.get('title')
+        subtitle = request.POST.get('subtitle')
+        button_text = request.POST.get('button_text')
+        link = request.POST.get('link')
+        image = request.FILES.get('image')
+        is_active = request.POST.get('is_active') == 'on'
+
+        Advertisement.objects.create(
+            title=title,
+            subtitle=subtitle,
+            button_text=button_text or 'Shop Now',
+            link=link or '/products/',
+            image=image,
+            is_active=is_active
+        )
+
+        return redirect('admin_advertisements')
+
+    return render(request, 'core/add_advertisement.html')
+
+
+@login_required
+def edit_advertisement(request, advertisement_id):
+    if request.user.userprofile.role != 'admin':
+        return redirect('home')
+
+    advertisement = get_object_or_404(Advertisement, id=advertisement_id)
+
+    if request.method == 'POST':
+        advertisement.title = request.POST.get('title')
+        advertisement.subtitle = request.POST.get('subtitle')
+        advertisement.button_text = request.POST.get('button_text') or 'Shop Now'
+        advertisement.link = request.POST.get('link') or '/products/'
+        advertisement.is_active = request.POST.get('is_active') == 'on'
+
+        if request.FILES.get('image'):
+            advertisement.image = request.FILES.get('image')
+
+        advertisement.save()
+        return redirect('admin_advertisements')
+
+    return render(request, 'core/edit_advertisement.html', {'advertisement': advertisement})
+
+
+@login_required
+def delete_advertisement(request, advertisement_id):
+    if request.user.userprofile.role != 'admin':
+        return redirect('home')
+
+    advertisement = get_object_or_404(Advertisement, id=advertisement_id)
+    advertisement.delete()
+    return redirect('admin_advertisements')
 
 
 @login_required

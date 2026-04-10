@@ -1,0 +1,66 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Add Advertisement{% endblock %}
+
+{% block content %}
+<div style="max-width: 850px; margin: 0 auto;">
+    <div style="
+        background: white;
+        padding: 30px;
+        border-radius: 18px;
+        box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+    ">
+        <div style="margin-bottom: 18px;">
+            <a href="/admin-advertisements/" style="text-decoration: none; color: #1f4e79; font-weight: bold;">
+                ← Back to Advertisements
+            </a>
+        </div>
+
+        <h2 style="margin-top: 0; color: #1f4e79;">Add Advertisement</h2>
+        <p style="color: #555; margin-bottom: 24px;">Create a new homepage advertisement banner.</p>
+
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <div style="margin-bottom: 18px;">
+                <label style="display: block; font-weight: bold; margin-bottom: 8px;">Title</label>
+                <input type="text" name="title" required
+                       style="width: 100%; padding: 14px; border: 1px solid #cbd5e1; border-radius: 10px; box-sizing: border-box;">
+            </div>
+
+            <div style="margin-bottom: 18px;">
+                <label style="display: block; font-weight: bold; margin-bottom: 8px;">Subtitle</label>
+                <textarea name="subtitle" rows="4"
+                          style="width: 100%; padding: 14px; border: 1px solid #cbd5e1; border-radius: 10px; box-sizing: border-box; resize: vertical;"></textarea>
+            </div>
+
+            <div style="margin-bottom: 18px;">
+                <label style="display: block; font-weight: bold; margin-bottom: 8px;">Button Text</label>
+                <input type="text" name="button_text" value="Shop Now"
+                       style="width: 100%; padding: 14px; border: 1px solid #cbd5e1; border-radius: 10px; box-sizing: border-box;">
+            </div>
+
+            <div style="margin-bottom: 18px;">
+                <label style="display: block; font-weight: bold; margin-bottom: 8px;">Link</label>
+                <input type="text" name="link" value="/products/"
+                       style="width: 100%; padding: 14px; border: 1px solid #cbd5e1; border-radius: 10px; box-sizing: border-box;">
+            </div>
+
+            <div style="margin-bottom: 18px;">
+                <label style="display: block; font-weight: bold; margin-bottom: 8px;">Image</label>
+                <input type="file" name="image" accept="image/*" required
+                       style="width: 100%; padding: 14px; border: 1px solid #cbd5e1; border-radius: 10px; box-sizing: border-box;">
+            </div>
+
+            <div style="margin-bottom: 24px;">
+                <label style="display: inline-flex; align-items: center; gap: 8px;">
+                    <input type="checkbox" name="is_active" checked>
+                    <span>Active advertisement</span>
+                </label>
+            </div>
+
+            <button type="submit" class="btn">Save Advertisement</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

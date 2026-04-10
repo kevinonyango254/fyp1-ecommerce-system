@@ -1,0 +1,81 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Manage Advertisements{% endblock %}
+
+{% block content %}
+<h2 style="margin-bottom: 10px;">Manage Advertisements</h2>
+<p style="color: #555; margin-bottom: 20px;">Create, edit, and manage homepage promotional advertisements.</p>
+
+<div style="margin-bottom: 25px;">
+    <a href="/admin-advertisements/add/" class="btn">Add Advertisement</a>
+</div>
+
+{% if advertisements %}
+    <div style="display: flex; flex-direction: column; gap: 16px;">
+        {% for advertisement in advertisements %}
+            <div style="
+                background: white;
+                padding: 22px;
+                border-radius: 16px;
+                box-shadow: 0 5px 14px rgba(0,0,0,0.06);
+            ">
+                <div style="
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: flex-start;
+                    gap: 18px;
+                    flex-wrap: wrap;
+                ">
+                    <div style="flex: 1; min-width: 260px;">
+                        <h3 style="margin: 0 0 10px 0; color: #1f4e79;">{{ advertisement.title }}</h3>
+
+                        {% if advertisement.subtitle %}
+                            <p style="margin: 0 0 10px 0; color: #555; line-height: 1.7;">
+                                {{ advertisement.subtitle }}
+                            </p>
+                        {% endif %}
+
+                        <p style="margin: 0 0 8px 0; color: #666;">
+                            <strong>Button Text:</strong> {{ advertisement.button_text }}
+                        </p>
+                        <p style="margin: 0 0 8px 0; color: #666;">
+                            <strong>Link:</strong> {{ advertisement.link }}
+                        </p>
+                        <p style="margin: 0; color: #666;">
+                            <strong>Status:</strong>
+                            {% if advertisement.is_active %}
+                                <span style="color: #28a745; font-weight: bold;">Active</span>
+                            {% else %}
+                                <span style="color: #dc3545; font-weight: bold;">Inactive</span>
+                            {% endif %}
+                        </p>
+                    </div>
+
+                    <div style="min-width: 220px; text-align: right;">
+                        {% if advertisement.image %}
+                            <img src="{{ advertisement.image.url }}" alt="{{ advertisement.title }}"
+                                 style="width: 200px; height: 120px; object-fit: cover; border-radius: 12px; margin-bottom: 12px; border: 1px solid #e5e7eb;">
+                        {% endif %}
+
+                        <div style="display: flex; gap: 10px; justify-content: flex-end; flex-wrap: wrap;">
+                            <a href="/admin-advertisements/edit/{{ advertisement.id }}/"
+                               style="background: #1f4e79; color: white; padding: 10px 14px; border-radius: 8px; text-decoration: none;">
+                                Edit
+                            </a>
+                            <a href="/admin-advertisements/delete/{{ advertisement.id }}/"
+                               style="background: #dc3545; color: white; padding: 10px 14px; border-radius: 8px; text-decoration: none;"
+                               onclick="return confirm('Are you sure you want to delete this advertisement?');">
+                                Delete
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <div style="background: white; padding: 30px; border-radius: 14px;">
+        <p style="margin: 0; color: #666;">No advertisements found yet.</p>
+    </div>
+{% endif %}
+{% endblock %}
