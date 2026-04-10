@@ -6,17 +6,26 @@ class AccountsConfig(AppConfig):
     name = 'accounts'
 
     def ready(self):
-        from django.contrib.auth.models import User
-        from .models import UserProfile
+        from django.db.models.signals import post_migrate
+        post_migrate.connect(create_default_superadmin, sender=self)
 
-        if not User.objects.filter(username='superadmin').exists():
-            user = User.objects.create_superuser(
-                username='superadmin',
-                email='academicexpert10@gmail.com',
-                password='admin1234'
-            )
 
-            UserProfile.objects.get_or_create(
-                user=user,
-                defaults={'role': 'admin'}
-            )
+def create_default_superadmin(sender, **kwargs):
+    from django.contrib.auth.models import User
+    from .models import UserProfile
+
+    username = 'superadmin'
+    email = 'academicexpert10@gmail.com'
+    password = 'admin1234'
+
+    if not User.objects.filter(username=username).exists():
+        user = User.objects.create_superuser(
+            username=username,
+            email=email,
+            password=password
+        )
+
+        UserProfile.objects.get_or_create(
+            user=user,
+            defaults={'role': 'admin'}
+        )
