@@ -1,0 +1,87 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Order Details{% endblock %}
+
+{% block content %}
+<div style="max-width: 1000px; margin: 0 auto;">
+    <div style="margin-bottom: 18px;">
+        <a href="/my-orders/" style="text-decoration:none; color:#1f4e79; font-weight:bold;">← Back to My Orders</a>
+    </div>
+
+    <div style="
+        background: white;
+        padding: 26px;
+        border-radius: 18px;
+        box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+    ">
+        <div style="
+            display:flex;
+            justify-content:space-between;
+            align-items:flex-start;
+            flex-wrap:wrap;
+            gap:16px;
+            margin-bottom:20px;
+        ">
+            <div>
+                <h2 style="margin:0 0 8px 0; color:#1f4e79;">Order #{{ order.id }}</h2>
+                <p style="margin:0; color:#666;">{{ order.created_at|date:"F j, Y, g:i a" }}</p>
+            </div>
+            <div style="text-align:right;">
+                <p style="margin:0; font-size:24px; font-weight:bold;">RM {{ order.total_amount }}</p>
+                <p style="margin:8px 0 0 0; color:#555;">Payment: {{ order.get_payment_status_display }}</p>
+                {% if order.payment_method %}
+                    <p style="margin:4px 0 0 0; color:#555;">Method: {{ order.get_payment_method_display }}</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <div style="overflow-x:auto; margin-bottom:22px;">
+            <table style="width:100%; border-collapse:collapse; background:#fff; border-radius:14px; overflow:hidden;">
+                <thead>
+                    <tr style="background:#eaf2fb; color:#123b63;">
+                        <th style="padding:14px; text-align:left;">Product</th>
+                        <th style="padding:14px; text-align:left;">Quantity</th>
+                        <th style="padding:14px; text-align:left;">RM / Unit</th>
+                        <th style="padding:14px; text-align:left;">Subtotal</th>
+                        <th style="padding:14px; text-align:left;">Review</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in order.items.all %}
+                    <tr style="border-bottom:1px solid #e5e7eb;">
+                        <td style="padding:14px;">{{ item.product.name }}</td>
+                        <td style="padding:14px;">{{ item.quantity }}</td>
+                        <td style="padding:14px;">{{ item.unit_price }}</td>
+                        <td style="padding:14px;">RM {{ item.subtotal }}</td>
+                        <td style="padding:14px;">
+                            {% if item.can_review %}
+                                <a href="/products/{{ item.product.id }}/" class="btn" style="background:#17a2b8;">
+                                    Review Product
+                                </a>
+                            {% else %}
+                                <span style="color:#777;">No action</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div style="
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            flex-wrap:wrap;
+            gap:12px;
+        ">
+            <div>
+                <strong>Status:</strong> {{ order.get_status_display }}
+            </div>
+            <div>
+                <a href="/order-success/{{ order.id }}/" class="btn">View Receipt</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

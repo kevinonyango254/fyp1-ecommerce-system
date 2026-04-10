@@ -4,69 +4,282 @@
 
 {% block content %}
 
-<div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap;">
-
-    <!-- LEFT SIDE -->
-    <div style="max-width: 500px;">
-        <div style="
-    background: linear-gradient(to right, #1f4e79, #2c6ca6);
-    padding: 20px;
-    border-radius: 10px;
-    color: white;
-    display: inline-block;
-    margin-bottom: 15px;
+<div style="
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 30px;
+    flex-wrap: wrap;
+    margin-bottom: 35px;
 ">
-    <h1 style="font-size: 36px; margin: 0;">
-        Smart <span style="color:#ffd700;">E-Commerce</span> & Inventory System
-    </h1>
-</div>
+    <div style="max-width: 560px;">
+        <div style="
+            background: linear-gradient(135deg, #0f3d63, #2563eb);
+            padding: 24px 26px;
+            border-radius: 18px;
+            color: white;
+            display: inline-block;
+            margin-bottom: 18px;
+            box-shadow: 0 10px 24px rgba(37, 99, 235, 0.18);
+        ">
+            <h1 style="font-size: 38px; margin: 0; line-height: 1.3;">
+                Smart <span style="color:#ffd54f;">Commerce</span> for Modern Shopping
+            </h1>
+        </div>
 
-        <p style="font-size: 18px; color: #444; margin-top: 10px;">
-            A modern platform for seamless product management, real-time inventory tracking,
-            and efficient online purchasing.
+        <p style="font-size: 18px; color: #444; margin-top: 10px; line-height: 1.8;">
+            Discover a seamless online shopping experience with smarter product browsing,
+            easy ordering, real-time order updates, and reliable inventory visibility.
         </p>
 
-        <br>
-
-        <a href="/products/" class="btn" style="font-size:16px;">
-            Browse Products
-        </a>
+        <div style="margin-top: 22px; display: flex; gap: 12px; flex-wrap: wrap;">
+            <a href="/products/" class="btn" style="font-size:16px;">
+                Browse Products
+            </a>
+            <a href="/about/" class="btn" style="font-size:16px; background: #64748b;">
+                Learn More
+            </a>
+        </div>
     </div>
 
-    <!-- RIGHT SIDE (IMAGE) -->
     <div>
         <img src="https://cdn-icons-png.flaticon.com/512/3081/3081559.png"
              alt="Ecommerce Illustration"
-             style="width: 300px;">
+             style="width: 320px; max-width: 100%;">
     </div>
-
 </div>
 
-<br><br>
+<div style="margin-bottom: 40px;">
+    <h2 style="margin-bottom: 18px; color: #123b63;">Latest Promotions</h2>
 
-<hr>
+    {% if advertisements %}
+        <div style="
+            position: relative;
+            overflow: hidden;
+            border-radius: 24px;
+            height: 360px;
+            box-shadow: 0 14px 30px rgba(0,0,0,0.10);
+            background: #e5e7eb;
+        ">
+            {% for ad in advertisements %}
+                <div class="ad-slide" style="
+                    display: {% if forloop.first %}block{% else %}none{% endif %};
+                    position: relative;
+                    width: 100%;
+                    height: 360px;
+                ">
+                    <img src="{{ ad.image.url }}" alt="{{ ad.title }}"
+                         style="
+                            width: 100%;
+                            height: 100%;
+                            object-fit: cover;
+                            object-position: center;
+                            display: block;
+                         ">
 
-<br>
+                    <div style="
+                        position: absolute;
+                        inset: 0;
+                        background:
+                            linear-gradient(90deg, rgba(8,24,44,0.78) 0%, rgba(8,24,44,0.58) 35%, rgba(8,24,44,0.18) 70%, rgba(8,24,44,0.05) 100%);
+                        display: flex;
+                        align-items: center;
+                    ">
+                        <div style="
+                            padding: 42px;
+                            color: white;
+                            max-width: 560px;
+                        ">
+                            <div style="
+                                display: inline-block;
+                                background: rgba(255,255,255,0.14);
+                                border: 1px solid rgba(255,255,255,0.22);
+                                backdrop-filter: blur(4px);
+                                padding: 7px 14px;
+                                border-radius: 999px;
+                                font-size: 13px;
+                                font-weight: bold;
+                                letter-spacing: 0.4px;
+                                margin-bottom: 14px;
+                            ">
+                                Featured Promotion
+                            </div>
 
-<h2 style="text-align:center;">Why This System?</h2>
+                            <h2 style="
+                                margin: 0 0 12px 0;
+                                font-size: 38px;
+                                line-height: 1.2;
+                                text-shadow: 0 2px 10px rgba(0,0,0,0.18);
+                            ">
+                                {{ ad.title }}
+                            </h2>
 
-<div style="display: flex; justify-content: space-around; flex-wrap: wrap; text-align: center;">
+                            {% if ad.subtitle %}
+                                <p style="
+                                    font-size: 17px;
+                                    line-height: 1.8;
+                                    margin: 0 0 22px 0;
+                                    color: rgba(255,255,255,0.95);
+                                ">
+                                    {{ ad.subtitle }}
+                                </p>
+                            {% endif %}
 
-    <div style="max-width: 250px;">
-        <h3>📦 Inventory Control</h3>
-        <p>Real-time stock updates after each successful purchase.</p>
-    </div>
+                            <a href="{{ ad.link }}" style="
+                                display: inline-block;
+                                background: linear-gradient(135deg, #ffffff, #f8fafc);
+                                color: #123b63;
+                                padding: 12px 22px;
+                                border-radius: 12px;
+                                text-decoration: none;
+                                font-weight: bold;
+                                box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+                            ">
+                                {{ ad.button_text }}
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
 
-    <div style="max-width: 250px;">
-        <h3>💳 Checkout System</h3>
-        <p>Simple and efficient order and payment workflow.</p>
-    </div>
+            <button onclick="prevSlide()" style="
+                position: absolute;
+                top: 50%;
+                left: 16px;
+                transform: translateY(-50%);
+                width: 44px;
+                height: 44px;
+                border: none;
+                border-radius: 50%;
+                background: rgba(255,255,255,0.88);
+                color: #123b63;
+                font-size: 22px;
+                cursor: pointer;
+                box-shadow: 0 6px 18px rgba(0,0,0,0.14);
+            ">‹</button>
 
-    <div style="max-width: 250px;">
-        <h3>⭐ Customer Feedback</h3>
-        <p>Product ratings help improve user trust and decision-making.</p>
-    </div>
+            <button onclick="nextSlide()" style="
+                position: absolute;
+                top: 50%;
+                right: 16px;
+                transform: translateY(-50%);
+                width: 44px;
+                height: 44px;
+                border: none;
+                border-radius: 50%;
+                background: rgba(255,255,255,0.88);
+                color: #123b63;
+                font-size: 22px;
+                cursor: pointer;
+                box-shadow: 0 6px 18px rgba(0,0,0,0.14);
+            ">›</button>
 
+            <div style="
+                position: absolute;
+                bottom: 18px;
+                left: 50%;
+                transform: translateX(-50%);
+                display: flex;
+                gap: 10px;
+            ">
+                {% for ad in advertisements %}
+                    <span class="ad-dot" style="
+                        width: 12px;
+                        height: 12px;
+                        border-radius: 50%;
+                        background: white;
+                        opacity: {% if forloop.first %}1{% else %}0.45{% endif %};
+                        box-shadow: 0 2px 6px rgba(0,0,0,0.18);
+                        cursor: pointer;
+                    " onclick="showSlide({{ forloop.counter0 }})"></span>
+                {% endfor %}
+            </div>
+        </div>
+    {% else %}
+        <div style="
+            background: white;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+        ">
+            <p style="margin: 0; color: #555;">No advertisements available yet.</p>
+        </div>
+    {% endif %}
 </div>
+
+<div style="margin-top: 10px;">
+    <h2 style="text-align:center; color: #123b63; margin-bottom: 25px;">Why Shop With SmartCommerce?</h2>
+
+    <div style="
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 20px;
+        text-align: center;
+    ">
+        <div style="background: white; border-radius: 18px; padding: 24px; box-shadow: 0 8px 20px rgba(0,0,0,0.06);">
+            <h3 style="margin-top: 0;">📦 Order Visibility</h3>
+            <p style="color: #555; line-height: 1.7;">
+                Follow your order status clearly from placement to final confirmation.
+            </p>
+        </div>
+
+        <div style="background: white; border-radius: 18px; padding: 24px; box-shadow: 0 8px 20px rgba(0,0,0,0.06);">
+            <h3 style="margin-top: 0;">🔎 Easy Product Search</h3>
+            <p style="color: #555; line-height: 1.7;">
+                Find products faster with a simple and user-friendly search experience.
+            </p>
+        </div>
+
+        <div style="background: white; border-radius: 18px; padding: 24px; box-shadow: 0 8px 20px rgba(0,0,0,0.06);">
+            <h3 style="margin-top: 0;">⭐ Trusted Feedback</h3>
+            <p style="color: #555; line-height: 1.7;">
+                Customer ratings help buyers make more informed and confident decisions.
+            </p>
+        </div>
+
+        <div style="background: white; border-radius: 18px; padding: 24px; box-shadow: 0 8px 20px rgba(0,0,0,0.06);">
+            <h3 style="margin-top: 0;">📨 Better Communication</h3>
+            <p style="color: #555; line-height: 1.7;">
+                Receive important updates through your mailbox whenever action is needed.
+            </p>
+        </div>
+    </div>
+</div>
+
+{% if advertisements %}
+<script>
+    const slides = document.querySelectorAll('.ad-slide');
+    const dots = document.querySelectorAll('.ad-dot');
+    let currentSlide = 0;
+
+    function showSlide(index) {
+        slides.forEach((slide, i) => {
+            slide.style.display = i === index ? 'block' : 'none';
+        });
+
+        dots.forEach((dot, i) => {
+            dot.style.opacity = i === index ? '1' : '0.45';
+        });
+
+        currentSlide = index;
+    }
+
+    function nextSlide() {
+        const next = (currentSlide + 1) % slides.length;
+        showSlide(next);
+    }
+
+    function prevSlide() {
+        const prev = (currentSlide - 1 + slides.length) % slides.length;
+        showSlide(prev);
+    }
+
+    if (slides.length > 1) {
+        setInterval(() => {
+            nextSlide();
+        }, 4500);
+    }
+</script>
+{% endif %}
 
 {% endblock %}

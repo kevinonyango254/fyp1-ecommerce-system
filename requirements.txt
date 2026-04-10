@@ -7,3 +7,6 @@ whitenoise==6.9.0
 packaging==25.0
 dj-database-url==2.2.0
 psycopg[binary]==3.2.9
+cloudinary
+django-cloudinary-storage
+python-dotenv

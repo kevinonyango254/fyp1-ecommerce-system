@@ -1,0 +1,76 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Register{% endblock %}
+
+{% block content %}
+<div style="max-width: 480px; margin: 40px auto;">
+    <div style="
+        background: white;
+        border-radius: 18px;
+        padding: 35px;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+    ">
+        <div style="text-align: center; margin-bottom: 25px;">
+            <h2 style="margin-bottom: 8px; color: #1f4e79; font-size: 30px;">Create Account</h2>
+            <p style="color: #666; margin: 0;">Join SmartCommerce today</p>
+        </div>
+
+        <form method="POST">
+            {% csrf_token %}
+
+            {% for field in form %}
+                <div style="margin-bottom: 18px;">
+                    <label style="display: block; margin-bottom: 8px; font-weight: bold; color: #333;">
+                        {{ field.label }}
+                    </label>
+
+                    {{ field }}
+
+                    {% if field.errors %}
+                        <p style="color: red; font-size: 13px; margin-top: 5px;">
+                            {{ field.errors|striptags }}
+                        </p>
+                    {% endif %}
+                </div>
+            {% endfor %}
+
+            <button
+                type="submit"
+                style="
+                    width: 100%;
+                    background: linear-gradient(to right, #1f4e79, #2c6ca6);
+                    color: white;
+                    border: none;
+                    padding: 13px;
+                    border-radius: 10px;
+                    font-size: 16px;
+                    font-weight: bold;
+                    cursor: pointer;
+                "
+            >
+                Register
+            </button>
+        </form>
+
+        <div style="text-align: center; margin-top: 22px;">
+            <p style="color: #555; margin: 0;">
+                Already have an account?
+                <a href="/login/" style="color: #1f4e79; font-weight: bold; text-decoration: none;">
+                    Login
+                </a>
+            </p>
+        </div>
+    </div>
+</div>
+
+<style>
+input {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    font-size: 15px;
+    box-sizing: border-box;
+}
+</style>
+{% endblock %}

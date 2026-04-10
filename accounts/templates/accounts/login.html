@@ -1,0 +1,108 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Login{% endblock %}
+
+{% block content %}
+<div style="max-width: 480px; margin: 40px auto;">
+    <div style="
+        background: white;
+        border-radius: 18px;
+        padding: 35px;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+    ">
+        <div style="text-align: center; margin-bottom: 25px;">
+            <h2 style="margin-bottom: 8px; color: #1f4e79; font-size: 30px;">Welcome Back</h2>
+            <p style="color: #666; margin: 0;">Login to your SmartCommerce account</p>
+        </div>
+
+        {% if error %}
+            <div style="
+                background: #fdeaea;
+                color: #b02a37;
+                padding: 12px 15px;
+                border-radius: 10px;
+                margin-bottom: 20px;
+                border: 1px solid #f5c2c7;
+            ">
+                {{ error }}
+            </div>
+        {% endif %}
+
+        <form method="POST">
+            {% csrf_token %}
+
+            <div style="margin-bottom: 18px;">
+                <label style="display: block; margin-bottom: 8px; font-weight: bold; color: #333;">
+                    Username
+                </label>
+                <input
+                    type="text"
+                    name="username"
+                    required
+                    style="
+                        width: 100%;
+                        padding: 12px 14px;
+                        border: 1px solid #ccc;
+                        border-radius: 10px;
+                        font-size: 15px;
+                        box-sizing: border-box;
+                    "
+                    placeholder="Enter your username"
+                >
+            </div>
+
+            <div style="margin-bottom: 10px;">
+                <label style="display: block; margin-bottom: 8px; font-weight: bold; color: #333;">
+                    Password
+                </label>
+                <input
+                    type="password"
+                    name="password"
+                    required
+                    style="
+                        width: 100%;
+                        padding: 12px 14px;
+                        border: 1px solid #ccc;
+                        border-radius: 10px;
+                        font-size: 15px;
+                        box-sizing: border-box;
+                    "
+                    placeholder="Enter your password"
+                >
+            </div>
+
+            <div style="text-align: right; margin-bottom: 22px;">
+                <a href="/password-reset/" style="color: #1f4e79; text-decoration: none; font-size: 14px; font-weight: 600;">
+                    Forgot Password?
+                </a>
+            </div>
+
+            <button
+                type="submit"
+                style="
+                    width: 100%;
+                    background: linear-gradient(to right, #1f4e79, #2c6ca6);
+                    color: white;
+                    border: none;
+                    padding: 13px;
+                    border-radius: 10px;
+                    font-size: 16px;
+                    font-weight: bold;
+                    cursor: pointer;
+                "
+            >
+                Login
+            </button>
+        </form>
+
+        <div style="text-align: center; margin-top: 22px;">
+            <p style="color: #555; margin: 0;">
+                Don’t have an account?
+                <a href="/register/" style="color: #1f4e79; font-weight: bold; text-decoration: none;">
+                    Register
+                </a>
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}

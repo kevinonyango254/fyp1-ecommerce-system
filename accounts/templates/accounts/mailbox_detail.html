@@ -1,0 +1,121 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Conversation Details{% endblock %}
+
+{% block content %}
+<div style="max-width: 950px; margin: 0 auto;">
+    <div style="
+        background: white;
+        padding: 28px;
+        border-radius: 18px;
+        box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+    ">
+        <div style="margin-bottom: 18px;">
+            <a href="/mailbox/" style="text-decoration: none; color: #1f4e79; font-weight: bold;">
+                ← Back to Mailbox
+            </a>
+        </div>
+
+        <h2 style="margin-top: 0; margin-bottom: 8px; color: #1f4e79;">{{ message.subject }}</h2>
+
+        <p style="color: #666; margin-bottom: 24px;">
+            Conversation with <strong>{{ other_user.username }}</strong>
+        </p>
+
+        <div style="
+            background: #f8fafc;
+            border: 1px solid #e5e7eb;
+            padding: 20px;
+            border-radius: 16px;
+            margin-bottom: 28px;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        ">
+            {% for msg in thread_messages %}
+                <div style="
+                    display: flex;
+                    justify-content: {% if msg.sender == user %}flex-end{% else %}flex-start{% endif %};
+                ">
+                    <div style="
+                        max-width: 72%;
+                        padding: 16px 18px;
+                        border-radius: 16px;
+                        background: {% if msg.sender == user %}#1f4e79{% else %}#ffffff{% endif %};
+                        color: {% if msg.sender == user %}white{% else %}#222{% endif %};
+                        border: {% if msg.sender == user %}none{% else %}1px solid #dbe2ea{% endif %};
+                        box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+                    ">
+                        <div style="
+                            font-size: 13px;
+                            font-weight: bold;
+                            margin-bottom: 8px;
+                            opacity: 0.9;
+                        ">
+                            {{ msg.sender.username }}
+                        </div>
+
+                        <div style="
+                            line-height: 1.7;
+                            white-space: pre-line;
+                            margin-bottom: 10px;
+                        ">
+                            {{ msg.content }}
+                        </div>
+
+                        <div style="
+                            font-size: 12px;
+                            opacity: 0.85;
+                            text-align: right;
+                        ">
+                            {{ msg.created_at|date:"F j, Y, g:i a" }}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+        {% if reply_error %}
+            <div style="
+                background: #fee2e2;
+                color: #991b1b;
+                padding: 12px 14px;
+                border-radius: 10px;
+                margin-bottom: 15px;
+            ">
+                {{ reply_error }}
+            </div>
+        {% endif %}
+
+        <div style="
+            background: #f8fbff;
+            border: 1px solid #dbe7f3;
+            padding: 22px;
+            border-radius: 14px;
+        ">
+            <h3 style="margin-top: 0; color: #1f4e79;">Send Reply</h3>
+
+            <form method="post">
+                {% csrf_token %}
+                <textarea
+                    name="reply_content"
+                    rows="5"
+                    placeholder="Type your message here..."
+                    style="
+                        width: 100%;
+                        padding: 14px;
+                        border: 1px solid #cbd5e1;
+                        border-radius: 10px;
+                        font-size: 15px;
+                        box-sizing: border-box;
+                        margin-bottom: 15px;
+                        resize: vertical;
+                    "
+                ></textarea>
+
+                <button type="submit" class="btn">Send Message</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

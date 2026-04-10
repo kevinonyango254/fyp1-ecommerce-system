@@ -1,0 +1,83 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Payment{% endblock %}
+
+{% block content %}
+<div style="max-width: 900px; margin: 0 auto;">
+    <h2 style="margin-bottom: 10px;">Payment Page</h2>
+    <p style="color: #555; margin-bottom: 25px;">Select a payment method to complete your order.</p>
+
+    <div style="
+        display: grid;
+        grid-template-columns: 1.2fr 0.8fr;
+        gap: 24px;
+        align-items: start;
+    ">
+        <div style="
+            background: white;
+            padding: 24px;
+            border-radius: 18px;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+        ">
+            <h3 style="margin-top: 0; color: #1f4e79;">Choose Payment Method</h3>
+
+            <form method="post" action="/payment/{{ order.id }}/process/">
+                {% csrf_token %}
+
+                <label style="display:block; margin-bottom:14px; padding:14px; border:1px solid #d1d5db; border-radius:12px; cursor:pointer;">
+                    <input type="radio" name="payment_method" value="tng" required>
+                    <strong style="margin-left:8px;">TNG E-Wallet</strong>
+                </label>
+
+                <label style="display:block; margin-bottom:14px; padding:14px; border:1px solid #d1d5db; border-radius:12px; cursor:pointer;">
+                    <input type="radio" name="payment_method" value="card" required>
+                    <strong style="margin-left:8px;">Master Card</strong>
+                </label>
+
+                <label style="display:block; margin-bottom:20px; padding:14px; border:1px solid #d1d5db; border-radius:12px; cursor:pointer;">
+                    <input type="radio" name="payment_method" value="bank" required>
+                    <strong style="margin-left:8px;">Bank Transfer</strong>
+                </label>
+
+                <button type="submit" class="btn" style="background:#28a745;">
+                    Confirm Payment
+                </button>
+            </form>
+        </div>
+
+        <div style="
+            background: white;
+            padding: 24px;
+            border-radius: 18px;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+        ">
+            <h3 style="margin-top: 0; color: #1f4e79;">Order Summary</h3>
+
+            <p style="margin: 6px 0;"><strong>Order ID:</strong> #{{ order.id }}</p>
+            <p style="margin: 6px 0;"><strong>Customer:</strong> {{ order.customer_name }}</p>
+            <p style="margin: 6px 0;"><strong>Email:</strong> {{ order.customer_email }}</p>
+
+            <hr style="margin: 18px 0;">
+
+            {% for item in order.items.all %}
+                <div style="display:flex; justify-content:space-between; margin-bottom:10px; gap:12px;">
+                    <div>
+                        {{ item.product.name }}<br>
+                        <span style="color:#666; font-size:14px;">Qty: {{ item.quantity }}</span>
+                    </div>
+                    <div style="font-weight:bold;">
+                        RM {{ item.subtotal }}
+                    </div>
+                </div>
+            {% endfor %}
+
+            <hr style="margin: 18px 0;">
+
+            <div style="display:flex; justify-content:space-between; font-size:20px; font-weight:bold;">
+                <span>Total</span>
+                <span>RM {{ order.total_amount }}</span>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

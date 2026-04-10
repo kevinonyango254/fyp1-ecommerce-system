@@ -1,113 +1,178 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>{% block title %}E-Commerce System{% endblock %}</title>
-
+    <title>{% block title %}SmartCommerce{% endblock %}</title>
     <style>
         body {
             font-family: Arial, sans-serif;
+            background: linear-gradient(to bottom right, #eef4fb, #f8fbff);
             margin: 0;
-            background-color: #f4f6f9;
+            padding: 0;
+            color: #222;
         }
 
-        /* NAVBAR */
-        .navbar {
+        nav {
             background: linear-gradient(to right, #1f4e79, #2c6ca6);
-            padding: 15px 30px;
+            padding: 18px 40px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+        }
+
+        .nav-container {
+            max-width: 1250px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .nav-left,
+        .nav-right {
             display: flex;
             align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
         }
 
-        .navbar a {
-            color: white;
-            text-decoration: none;
-            margin-right: 20px;
+        .brand {
+            font-size: 24px;
             font-weight: bold;
-        }
-
-        .navbar a:hover {
-            text-decoration: underline;
-        }
-
-        /* MAIN CONTAINER */
-        .container {
-            width: 85%;
-            margin: 30px auto;
-            background: white;
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-        }
-
-        /* PRODUCT CARD */
-        .product-card {
-            border: 1px solid #ddd;
-            padding: 18px;
-            margin: 15px 0;
-            border-radius: 10px;
-            background: #fafafa;
-            transition: 0.2s;
-        }
-
-        .product-card:hover {
-            transform: scale(1.01);
-            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
-        }
-
-        /* BUTTON */
-        .btn {
-            display: inline-block;
-            padding: 10px 18px;
-            background-color: #1f4e79;
             color: white;
             text-decoration: none;
-            border-radius: 6px;
-            border: none;
-            cursor: pointer;
             margin-right: 10px;
         }
 
+        nav a,
+        nav span {
+            color: white;
+            text-decoration: none;
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        nav a:hover {
+            text-decoration: underline;
+        }
+
+        .welcome-text {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 8px 14px;
+            border-radius: 20px;
+        }
+
+        .cart-link,
+        .mailbox-link {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.12);
+            padding: 8px 14px;
+            border-radius: 20px;
+        }
+
+        .cart-badge,
+        .mailbox-badge {
+            background: #ffd54f;
+            color: #123b63;
+            font-size: 12px;
+            font-weight: bold;
+            min-width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 4px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 35px auto;
+            background: rgba(255, 255, 255, 0.92);
+            padding: 35px;
+            border-radius: 18px;
+            box-shadow: 0 8px 26px rgba(0, 0, 0, 0.07);
+        }
+
+        .btn {
+            display: inline-block;
+            background: linear-gradient(to right, #1f4e79, #2c6ca6);
+            color: white;
+            padding: 12px 22px;
+            border-radius: 10px;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.2s ease;
+        }
+
         .btn:hover {
-            background-color: #163a5c;
+            opacity: 0.92;
+            text-decoration: none;
         }
 
-        /* INPUT */
-        input {
-            width: 100%;
-            max-width: 400px;
-            padding: 10px;
-            margin-top: 5px;
-            margin-bottom: 15px;
-            border-radius: 6px;
-            border: 1px solid #ccc;
-        }
+        @media (max-width: 768px) {
+            .nav-container {
+                flex-direction: column;
+                align-items: flex-start;
+            }
 
-        /* HEADINGS */
-        h1 {
-            font-size: 32px;
+            .container {
+                margin: 20px 15px;
+                padding: 25px;
+            }
         }
-
-        h2 {
-            margin-top: 20px;
-        }
-
-        h3 {
-            margin-top: 15px;
-        }
-
     </style>
 </head>
-
 <body>
 
-    <!-- NAVBAR -->
-    <div class="navbar">
-        <a href="/" style="font-size:20px; font-weight:bold;">🛒 SmartCommerce</a>
-        <a href="/products/">Products</a>
-        <a href="/admin/">Admin</a>
-    </div>
+    <nav>
+        <div class="nav-container">
+            <div class="nav-left">
+                <a href="/" class="brand">🛒 SmartCommerce</a>
+                <a href="/">Home</a>
+                <a href="/products/">Products</a>
+                <a href="/about/">About Us</a>
+            </div>
 
-    <!-- CONTENT -->
+            <div class="nav-right">
+                {% if user.is_authenticated %}
+                    {% if user.userprofile.role == 'admin' %}
+                        <a href="/admin-dashboard/">Admin Dashboard</a>
+                        <a href="/admin-products/">Manage Products</a>
+                    {% elif user.userprofile.role == 'support' %}
+                        <a href="/mailbox/">Support Inbox</a>
+                    {% else %}
+                        <a href="/my-orders/">My Orders</a>
+                    {% endif %}
+
+                    <a href="/mailbox/" class="mailbox-link">
+                        <span>Mailbox</span>
+                        {% if unread_mailbox_count > 0 %}
+                            <span class="mailbox-badge">{{ unread_mailbox_count }}</span>
+                        {% endif %}
+                    </a>
+
+                    {% if user.userprofile.role == 'user' %}
+                        <a href="/cart/" class="cart-link">
+                            <span>🧺 Cart</span>
+                            <span class="cart-badge">{{ cart_count }}</span>
+                        </a>
+                    {% endif %}
+
+                    <span class="welcome-text">Welcome, {{ user.username }}</span>
+                    <a href="/logout/">Logout</a>
+                {% else %}
+                    <a href="/login/">Login</a>
+                    <a href="/register/">Register</a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+
     <div class="container">
         {% block content %}
         {% endblock %}

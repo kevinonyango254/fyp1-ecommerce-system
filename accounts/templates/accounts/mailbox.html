@@ -1,0 +1,85 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Mailbox{% endblock %}
+
+{% block content %}
+<h2 style="margin-bottom: 10px;">Mailbox</h2>
+
+{% if user.userprofile.role == 'user' %}
+    <p style="color: #555; margin-bottom: 18px;">View your notifications, important order-related updates, and chat with support if you need help.</p>
+
+    <div style="margin-bottom: 25px;">
+        <a href="/contact-support/" class="btn">Contact Support</a>
+    </div>
+{% elif user.userprofile.role == 'support' %}
+    <p style="color: #555; margin-bottom: 25px;">View and reply to customer support conversations.</p>
+{% else %}
+    <p style="color: #555; margin-bottom: 25px;">View your notifications and support conversations.</p>
+{% endif %}
+
+{% if conversations %}
+    <div style="display: flex; flex-direction: column; gap: 16px;">
+        {% for conversation in conversations %}
+            <a href="/mailbox/{{ conversation.latest_message.id }}/" style="text-decoration: none; color: inherit;">
+                <div style="
+                    background: white;
+                    padding: 22px;
+                    border-radius: 16px;
+                    box-shadow: 0 5px 14px rgba(0,0,0,0.06);
+                    border-left: 6px solid {% if conversation.unread_count > 0 %}#1f4e79{% else %}#cbd5e1{% endif %};
+                    transition: 0.2s ease;
+                " onmouseover="this.style.transform='translateY(-2px)'"
+                  onmouseout="this.style.transform='translateY(0)'">
+
+                    <div style="
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: flex-start;
+                        gap: 15px;
+                        flex-wrap: wrap;
+                    ">
+                        <div>
+                            <h3 style="margin: 0 0 8px 0; color: #1f4e79;">
+                                {{ conversation.latest_message.subject }}
+                                {% if conversation.unread_count > 0 %}
+                                    <span style="
+                                        background: #1f4e79;
+                                        color: white;
+                                        font-size: 12px;
+                                        padding: 4px 9px;
+                                        border-radius: 12px;
+                                        margin-left: 8px;
+                                        vertical-align: middle;
+                                    ">
+                                        {{ conversation.unread_count }} New
+                                    </span>
+                                {% endif %}
+                            </h3>
+
+                            <p style="margin: 0 0 8px 0; color: #666; font-size: 14px;">
+                                Chat with: {{ conversation.other_user.username }}
+                            </p>
+
+                            <p style="margin: 0; color: #555; line-height: 1.7;">
+                                {{ conversation.latest_message.content|truncatewords:18 }}
+                            </p>
+                        </div>
+
+                        <div style="text-align: right; color: #666; font-size: 14px; min-width: 150px;">
+                            {{ conversation.latest_message.created_at|date:"F j, Y" }}<br>
+                            {{ conversation.latest_message.created_at|date:"g:i a" }}
+                        </div>
+                    </div>
+                </div>
+            </a>
+        {% endfor %}
+    </div>
+{% else %}
+    <div style="background: white; padding: 30px; border-radius: 14px; text-align: center;">
+        <div style="font-size: 52px; margin-bottom: 10px;">📭</div>
+        <h3 style="margin-bottom: 8px;">No conversations yet</h3>
+        <p style="color: #666; margin: 0;">Your support conversations and important updates will appear here.</p>
+    </div>
+{% endif %}
+
+{% endblock %}

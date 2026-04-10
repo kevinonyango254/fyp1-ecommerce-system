@@ -1,0 +1,222 @@
+{% extends 'core/base.html' %}
+
+{% block title %}My Orders{% endblock %}
+
+{% block content %}
+<h2 style="margin-bottom: 10px;">My Orders</h2>
+<p style="color: #555; margin-bottom: 25px;">Track your order progress and confirm delivery status.</p>
+
+{% if orders %}
+    <div style="display: flex; flex-direction: column; gap: 25px;">
+        {% for order in orders %}
+            <div style="
+                background: white;
+                border-radius: 18px;
+                padding: 24px;
+                box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+            ">
+                <div style="
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: flex-start;
+                    flex-wrap: wrap;
+                    gap: 15px;
+                    margin-bottom: 20px;
+                ">
+                    <div>
+                        <h3 style="margin: 0 0 8px 0;">
+                            <a href="/my-orders/{{ order.id }}/" style="color: #1f4e79; text-decoration: none;">
+                                Order #{{ order.id }}
+                            </a>
+                        </h3>
+                        <p style="margin: 0; color: #666;">{{ order.created_at|date:"F j, Y, g:i a" }}</p>
+                    </div>
+
+                    <div style="text-align: right;">
+                        <p style="margin: 0 0 8px 0; font-size: 20px; font-weight: bold;">RM {{ order.total_amount }}</p>
+
+                        {% if order.status == 'draft' %}
+                            <span style="background: #6c757d; color: white; padding: 6px 12px; border-radius: 20px; font-size: 14px;">Draft</span>
+                        {% elif order.status == 'waiting_admin_approve' %}
+                            <span style="background: #f0ad4e; color: white; padding: 6px 12px; border-radius: 20px; font-size: 14px;">Waiting Admin Approve</span>
+                        {% elif order.status == 'waiting_user_received' %}
+                            <span style="background: #0275d8; color: white; padding: 6px 12px; border-radius: 20px; font-size: 14px;">Waiting User Received Item</span>
+                        {% elif order.status == 'finished' %}
+                            <span style="background: #28a745; color: white; padding: 6px 12px; border-radius: 20px; font-size: 14px;">Finished</span>
+                        {% elif order.status == 'rejected' %}
+                            <span style="background: #dc3545; color: white; padding: 6px 12px; border-radius: 20px; font-size: 14px;">Rejected</span>
+                        {% else %}
+                            <span style="background: #999; color: white; padding: 6px 12px; border-radius: 20px; font-size: 14px;">{{ order.get_status_display }}</span>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div style="margin-bottom: 20px;">
+                    <div style="
+                        display: flex;
+                        align-items: center;
+                        justify-content: space-between;
+                        gap: 10px;
+                        flex-wrap: wrap;
+                    ">
+                        <div style="text-align: center; flex: 1; min-width: 120px;">
+                            <div style="width: 42px; height: 42px; margin: 0 auto 8px auto; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; color: white; background: #1f4e79;">1</div>
+                            <div style="font-weight: bold; font-size: 14px;">Order Placed</div>
+                        </div>
+
+                        <div style="flex: 1; height: 4px; background: {% if order.status == 'draft' %}#d1d5db{% else %}#1f4e79{% endif %}; min-width: 40px;"></div>
+
+                        <div style="text-align: center; flex: 1; min-width: 120px;">
+                            <div style="
+                                width: 42px;
+                                height: 42px;
+                                margin: 0 auto 8px auto;
+                                border-radius: 50%;
+                                display: flex;
+                                align-items: center;
+                                justify-content: center;
+                                font-weight: bold;
+                                color: white;
+                                background:
+                                    {% if order.status == 'waiting_admin_approve' or order.status == 'waiting_user_received' or order.status == 'finished' %}
+                                        #f0ad4e
+                                    {% elif order.status == 'rejected' %}
+                                        #dc3545
+                                    {% else %}
+                                        #d1d5db
+                                    {% endif %};
+                            ">2</div>
+                            <div style="font-weight: bold; font-size: 14px;">Admin Review</div>
+                        </div>
+
+                        <div style="flex: 1; height: 4px; background: {% if order.status == 'waiting_user_received' or order.status == 'finished' %}#0275d8{% else %}#d1d5db{% endif %}; min-width: 40px;"></div>
+
+                        <div style="text-align: center; flex: 1; min-width: 120px;">
+                            <div style="
+                                width: 42px;
+                                height: 42px;
+                                margin: 0 auto 8px auto;
+                                border-radius: 50%;
+                                display: flex;
+                                align-items: center;
+                                justify-content: center;
+                                font-weight: bold;
+                                color: white;
+                                background:
+                                    {% if order.status == 'waiting_user_received' or order.status == 'finished' %}
+                                        #0275d8
+                                    {% else %}
+                                        #d1d5db
+                                    {% endif %};
+                            ">3</div>
+                            <div style="font-weight: bold; font-size: 14px;">Waiting Delivery Confirmation</div>
+                        </div>
+
+                        <div style="flex: 1; height: 4px; background: {% if order.status == 'finished' %}#28a745{% else %}#d1d5db{% endif %}; min-width: 40px;"></div>
+
+                        <div style="text-align: center; flex: 1; min-width: 120px;">
+                            <div style="
+                                width: 42px;
+                                height: 42px;
+                                margin: 0 auto 8px auto;
+                                border-radius: 50%;
+                                display: flex;
+                                align-items: center;
+                                justify-content: center;
+                                font-weight: bold;
+                                color: white;
+                                background:
+                                    {% if order.status == 'finished' %}
+                                        #28a745
+                                    {% elif order.status == 'rejected' %}
+                                        #dc3545
+                                    {% else %}
+                                        #d1d5db
+                                    {% endif %};
+                            ">4</div>
+                            <div style="font-weight: bold; font-size: 14px;">
+                                {% if order.status == 'rejected' %}Rejected{% else %}Completed{% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {% if order.pending_reviews %}
+                    <div style="
+                        background: #fff8e1;
+                        border: 1px solid #ffe082;
+                        padding: 16px;
+                        border-radius: 14px;
+                        margin-bottom: 18px;
+                    ">
+                        <h4 style="margin-top: 0; margin-bottom: 10px; color: #8a6d3b;">Pending Reviews</h4>
+                        {% for item in order.pending_reviews %}
+                            <div style="
+                                display: flex;
+                                justify-content: space-between;
+                                align-items: center;
+                                flex-wrap: wrap;
+                                gap: 10px;
+                                padding: 10px 0;
+                                border-bottom: 1px solid #f3e2a9;
+                            ">
+                                <span>{{ item.product.name }}</span>
+                                <a href="/products/{{ item.product.id }}/" class="btn" style="background:#17a2b8;">
+                                    Review Product
+                                </a>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
+                <div style="
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    flex-wrap: wrap;
+                    gap: 15px;
+                    padding-top: 12px;
+                    border-top: 1px solid #e5e7eb;
+                ">
+                    <div>
+                        {% if order.status == 'waiting_admin_approve' %}
+                            <span style="color: #856404; font-weight: 600;">Your order is waiting for admin approval.</span>
+                        {% elif order.status == 'waiting_user_received' %}
+                            <span style="color: #0c5460; font-weight: 600;">Please confirm whether you have received your item.</span>
+                        {% elif order.status == 'finished' %}
+                            <span style="color: #155724; font-weight: 600;">This order has been completed successfully.</span>
+                        {% elif order.status == 'rejected' %}
+                            <span style="color: #721c24; font-weight: 600;">This order was rejected. Please check your mailbox for details.</span>
+                        {% else %}
+                            <span style="color: #555; font-weight: 600;">Order recorded in system.</span>
+                        {% endif %}
+                    </div>
+
+                    <div>
+                        {% if order.status == 'waiting_user_received' %}
+                            <a href="/my-orders/confirm/{{ order.id }}/"
+                               style="background: #28a745; color: white; padding: 10px 16px; border-radius: 8px; text-decoration: none; margin-right: 8px;">
+                                Confirm Received
+                            </a>
+                            <a href="/my-orders/not-received/{{ order.id }}/"
+                               style="background: #dc3545; color: white; padding: 10px 16px; border-radius: 8px; text-decoration: none;">
+                                Not Received
+                            </a>
+                        {% else %}
+                            <a href="/my-orders/{{ order.id }}/"
+                               style="background: #6c757d; color: white; padding: 10px 16px; border-radius: 8px; text-decoration: none;">
+                                View Details
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <div style="background: white; padding: 30px; border-radius: 12px;">
+        <p style="margin: 0; font-size: 17px; color: #555;">No orders found.</p>
+    </div>
+{% endif %}
+
+{% endblock %}
