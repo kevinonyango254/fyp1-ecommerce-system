@@ -31,6 +31,8 @@ from .views import (
     confirm_received,
     not_received,
     user_orders,
+    admin_users,
+    change_user_role,
 )
 
 urlpatterns = [
@@ -66,6 +68,9 @@ urlpatterns = [
     path('admin-advertisements/add/', add_advertisement, name='add_advertisement'),
     path('admin-advertisements/edit/<int:advertisement_id>/', edit_advertisement, name='edit_advertisement'),
     path('admin-advertisements/delete/<int:advertisement_id>/', delete_advertisement, name='delete_advertisement'),
+    
+    path('admin-users/', admin_users, name='admin_users'),
+    path('admin-users/change-role/<int:user_id>/', change_user_role, name='change_user_role'),
 
     path('admin-dashboard/approve/<int:order_id>/', approve_order, name='approve_order'),
     path('admin-dashboard/reject/<int:order_id>/', reject_order, name='reject_order'),

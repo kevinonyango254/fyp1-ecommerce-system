@@ -1,0 +1,50 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Manage Users{% endblock %}
+
+{% block content %}
+<h2 style="margin-bottom: 10px;">Manage Users</h2>
+<p style="color: #555; margin-bottom: 25px;">View and manage user roles.</p>
+
+<div style="overflow-x: auto;">
+    <table style="width: 100%; border-collapse: collapse; background: white; border-radius: 16px; overflow: hidden; box-shadow: 0 6px 18px rgba(0,0,0,0.06);">
+        <thead>
+            <tr style="background: linear-gradient(to right, #1f4e79, #2c6ca6); color: white;">
+                <th style="padding: 14px; text-align: left;">Username</th>
+                <th style="padding: 14px; text-align: left;">Email</th>
+                <th style="padding: 14px; text-align: left;">Role</th>
+                <th style="padding: 14px; text-align: left;">Change Role</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for user in users %}
+            <tr style="border-bottom: 1px solid #e5e7eb;">
+                <td style="padding: 14px;">{{ user.username }}</td>
+                <td style="padding: 14px;">{{ user.email }}</td>
+                <td style="padding: 14px;">
+                    <span style="font-weight: bold; color: #1f4e79;">
+                        {{ user.userprofile.role }}
+                    </span>
+                </td>
+
+                <td style="padding: 14px;">
+                    <form method="post" action="/admin-users/change-role/{{ user.id }}/">
+                        {% csrf_token %}
+                        <select name="role" style="padding:6px; border-radius:6px;">
+                            <option value="user">User</option>
+                            <option value="support">Support</option>
+                            <option value="admin">Admin</option>
+                        </select>
+                        <button type="submit" style="margin-left:10px; padding:6px 10px; border:none; background:#28a745; color:white; border-radius:6px;">
+                            Update
+                        </button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}

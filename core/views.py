@@ -508,3 +508,33 @@ def user_orders(request):
                     order.pending_reviews.append(item)
 
     return render(request, 'core/user_orders.html', {'orders': orders})
+
+from django.contrib.auth.models import User
+
+
+@login_required
+def admin_users(request):
+    if request.user.userprofile.role != 'admin':
+        return redirect('home')
+
+    users = User.objects.all()
+
+    return render(request, 'core/admin_users.html', {
+        'users': users
+    })
+
+@login_required
+def change_user_role(request, user_id):
+    if request.user.userprofile.role != 'admin':
+        return redirect('home')
+
+    user = get_object_or_404(User, id=user_id)
+
+    if request.method == 'POST':
+        new_role = request.POST.get('role')
+
+        if new_role in ['admin', 'support', 'user']:
+            user.userprofile.role = new_role
+            user.userprofile.save()
+
+    return redirect('admin_users')
