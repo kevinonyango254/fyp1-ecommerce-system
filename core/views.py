@@ -1,6 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.db.models import Avg, Q
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 from .models import Product, Advertisement, Cart, CartItem, Order, OrderItem, Rating
 from accounts.models import MailboxMessage
 
@@ -509,12 +510,10 @@ def user_orders(request):
 
     return render(request, 'core/user_orders.html', {'orders': orders})
 
-from django.contrib.auth.models import User
-
 
 @login_required
 def admin_users(request):
-    if request.user.userprofile.role != 'admin':
+    if request.user.userprofile.role not in ['admin', 'support']:
         return redirect('home')
 
     users = User.objects.all()
@@ -523,9 +522,10 @@ def admin_users(request):
         'users': users
     })
 
+
 @login_required
 def change_user_role(request, user_id):
-    if request.user.userprofile.role != 'admin':
+    if request.user.userprofile.role not in ['admin', 'support']:
         return redirect('home')
 
     user = get_object_or_404(User, id=user_id)
