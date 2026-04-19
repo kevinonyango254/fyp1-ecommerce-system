@@ -525,7 +525,7 @@ def admin_users(request):
 
 @login_required
 def change_user_role(request, user_id):
-    if request.user.userprofile.role not in ['admin', 'support']:
+    if request.user.userprofile.role != 'admin':
         return redirect('home')
 
     user = get_object_or_404(User, id=user_id)
