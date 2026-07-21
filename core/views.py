@@ -291,10 +291,41 @@ def admin_dashboard(request):
     if request.user.userprofile.role != 'admin':
         return redirect('home')
 
-    orders = Order.objects.all().order_by('-created_at')
+    orders = Order.objects.all()
+
+    # Search by customer name or email
+    search = request.GET.get('search', '')
+    if search:
+        orders = orders.filter(
+            Q(customer_name__icontains=search) |
+            Q(customer_email__icontains=search)
+        )
+
+    # Filter by order status
+    status = request.GET.get('status', '')
+    if status:
+        orders = orders.filter(status=status)
+
+    # Sort orders
+    sort = request.GET.get('sort', '-created_at')
+
+    allowed_sort_fields = {
+        '-created_at',
+        'created_at',
+        'total_amount',
+        '-total_amount'
+    }
+
+    if sort not in allowed_sort_fields:
+        sort = '-created_at'
+
+    orders = orders.order_by(sort)
 
     return render(request, 'core/admin_dashboard.html', {
-        'orders': orders
+        'orders': orders,
+        'search': search,
+        'status': status,
+        'sort': sort,
     })
 
 
