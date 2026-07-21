@@ -2,7 +2,16 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.db.models import Avg, Q
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from .models import Product, Advertisement, Cart, CartItem, Order, OrderItem, Rating
+from .models import (
+    Product,
+    Category,
+    Advertisement,
+    Cart,
+    CartItem,
+    Order,
+    OrderItem,
+    Rating,
+)
 from accounts.models import MailboxMessage
 
 
@@ -17,16 +26,28 @@ def about(request):
 
 def product_list(request):
     query = request.GET.get('q', '')
-    products = Product.objects.annotate(avg_rating=Avg('ratings__stars'))
+    category_id = request.GET.get('category', '')
+
+    products = Product.objects.annotate(
+        avg_rating=Avg('ratings__stars')
+    )
 
     if query:
         products = products.filter(
-            Q(name__icontains=query) | Q(description__icontains=query)
+            Q(name__icontains=query) |
+            Q(description__icontains=query)
         )
+
+    if category_id:
+        products = products.filter(category_id=category_id)
+
+    categories = Category.objects.all()
 
     return render(request, 'core/product_list.html', {
         'products': products,
-        'query': query
+        'categories': categories,
+        'query': query,
+        'selected_category': category_id,
     })
 
 
@@ -353,9 +374,15 @@ def add_product(request):
         stock = request.POST.get('stock')
         low_stock_threshold = request.POST.get('low_stock_threshold')
         image = request.FILES.get('image')
+        category_id = request.POST.get('category')
+
+        category = None
+        if category_id:
+            category = Category.objects.get(id=category_id)
 
         Product.objects.create(
             name=name,
+            category=category,
             description=description,
             price=price,
             stock=stock,
@@ -365,7 +392,9 @@ def add_product(request):
 
         return redirect('admin_products')
 
-    return render(request, 'core/add_product.html')
+    return render(request, 'core/add_product.html', {
+        'categories': Category.objects.all()
+    })
 
 
 @login_required
@@ -382,13 +411,23 @@ def edit_product(request, product_id):
         product.stock = request.POST.get('stock')
         product.low_stock_threshold = request.POST.get('low_stock_threshold') or 5
 
+        category_id = request.POST.get('category')
+        if category_id:
+            product.category = Category.objects.get(id=category_id)
+        else:
+            product.category = None
+
         if request.FILES.get('image'):
             product.image = request.FILES.get('image')
 
         product.save()
+
         return redirect('admin_products')
 
-    return render(request, 'core/edit_product.html', {'product': product})
+    return render(request, 'core/edit_product.html', {
+        'product': product,
+        'categories': Category.objects.all(),
+    })
 
 
 @login_required

@@ -8,64 +8,114 @@
     <div style="flex:1; min-width:280px; text-align:center;">
         {% if product.image %}
             <img src="{{ product.image.url }}" alt="{{ product.name }}"
-                 style="width: 280px; height: 280px; object-fit: contain; border-radius: 12px; background: white; padding: 10px;">
+                 style="width:280px; height:280px; object-fit:contain; border-radius:12px; background:white; padding:10px;">
         {% else %}
             <img src="https://via.placeholder.com/280" alt="No image"
-                 style="width: 280px; height: 280px; object-fit: contain; border-radius: 12px; background: white; padding: 10px;">
+                 style="width:280px; height:280px; object-fit:contain; border-radius:12px; background:white; padding:10px;">
         {% endif %}
     </div>
 
     <div style="flex:2; min-width:300px;">
-        <h1 style="margin-top: 0;">{{ product.name }}</h1>
 
-        <p style="color:#555; line-height:1.8;">{{ product.description }}</p>
+        <h1 style="margin-top:0;">{{ product.name }}</h1>
+
+        {% if product.category %}
+            <p style="margin:8px 0; color:#666;">
+                <strong>Category:</strong> {{ product.category.name }}
+            </p>
+        {% endif %}
+
+        <p style="color:#555; line-height:1.8;">
+            {{ product.description }}
+        </p>
 
         {% if product.avg_rating %}
-            <p style="color:#f4b400; font-size:22px; margin: 10px 0;">
+            <p style="color:#f4b400; font-size:22px; margin:10px 0;">
                 {% if product.avg_rating >= 1 %}★{% else %}☆{% endif %}
                 {% if product.avg_rating >= 2 %}★{% else %}☆{% endif %}
                 {% if product.avg_rating >= 3 %}★{% else %}☆{% endif %}
                 {% if product.avg_rating >= 4 %}★{% else %}☆{% endif %}
                 {% if product.avg_rating >= 5 %}★{% else %}☆{% endif %}
-                <span style="color:#555; font-size:15px;">({{ product.avg_rating|floatformat:1 }})</span>
+                <span style="color:#555; font-size:15px;">
+                    ({{ product.avg_rating|floatformat:1 }})
+                </span>
             </p>
         {% else %}
             <p style="color:#999;">No ratings yet</p>
         {% endif %}
 
-        <p style="font-size: 30px; font-weight: bold; margin: 15px 0;">RM {{ product.price }}</p>
+        <p style="font-size:30px; font-weight:bold; margin:15px 0;">
+            RM {{ product.price }}
+        </p>
 
         {% if product.is_out_of_stock %}
             <p style="display:inline-block; background:#dc3545; color:white; padding:8px 14px; border-radius:20px; font-weight:bold;">
                 Out of Stock
             </p>
+
             <br><br>
-            <button class="btn" style="background-color: gray; cursor:not-allowed;" disabled>Unavailable</button>
+
+            <button class="btn"
+                    style="background:gray; cursor:not-allowed;"
+                    disabled>
+                Unavailable
+            </button>
+
         {% elif product.is_low_stock %}
+
             <p style="display:inline-block; background:#f0ad4e; color:white; padding:8px 14px; border-radius:20px; font-weight:bold;">
                 Low Stock: {{ product.stock }} left
             </p>
+
             <br><br>
+
             <div style="display:flex; gap:10px; flex-wrap:wrap;">
-                <a href="/products/{{ product.id }}/buy/" class="btn">Buy Now</a>
-                <a href="/products/{{ product.id }}/add-to-cart/" class="btn" style="background:#17a2b8;">Add to Cart</a>
-                <a href="/products/" class="btn" style="background:#6c757d;">Back to Products</a>
+                <a href="/products/{{ product.id }}/buy/" class="btn">
+                    Buy Now
+                </a>
+
+                <a href="/products/{{ product.id }}/add-to-cart/"
+                   class="btn"
+                   style="background:#17a2b8;">
+                    Add to Cart
+                </a>
+
+                <a href="/products/" class="btn" style="background:#6c757d;">
+                    Back to Products
+                </a>
             </div>
+
         {% else %}
+
             <p style="display:inline-block; background:#28a745; color:white; padding:8px 14px; border-radius:20px; font-weight:bold;">
                 In Stock: {{ product.stock }}
             </p>
+
             <br><br>
+
             <div style="display:flex; gap:10px; flex-wrap:wrap;">
-                <a href="/products/{{ product.id }}/buy/" class="btn">Buy Now</a>
-                <a href="/products/{{ product.id }}/add-to-cart/" class="btn" style="background:#17a2b8;">Add to Cart</a>
-                <a href="/products/" class="btn" style="background:#6c757d;">Back to Products</a>
+                <a href="/products/{{ product.id }}/buy/" class="btn">
+                    Buy Now
+                </a>
+
+                <a href="/products/{{ product.id }}/add-to-cart/"
+                   class="btn"
+                   style="background:#17a2b8;">
+                    Add to Cart
+                </a>
+
+                <a href="/products/" class="btn" style="background:#6c757d;">
+                    Back to Products
+                </a>
             </div>
+
         {% endif %}
+
     </div>
 </div>
 
-<hr style="margin: 35px 0;">
+<hr style="margin:35px 0;">
+
 
 <h2 style="margin-bottom: 20px;">Ratings</h2>
 
