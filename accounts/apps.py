@@ -15,7 +15,7 @@ def create_default_superadmin(sender, **kwargs):
     from .models import UserProfile
 
     username = 'superadmin'
-    email = 'academicexpert10@gmail.com'
+    email = 'superadmin254@gmail.com'
     password = 'admin1234'
 
     if not User.objects.filter(username=username).exists():
