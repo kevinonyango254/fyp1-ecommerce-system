@@ -547,10 +547,16 @@ def admin_users(request):
     if request.user.userprofile.role not in ['admin', 'support']:
         return redirect('home')
 
+    role = request.GET.get('role', '')
+
     users = User.objects.all()
 
+    if role:
+        users = users.filter(userprofile__role=role)
+
     return render(request, 'core/admin_users.html', {
-        'users': users
+        'users': users,
+        'selected_role': role,
     })
 
 
