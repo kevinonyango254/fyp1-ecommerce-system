@@ -87,13 +87,37 @@ class Order(models.Model):
         ('bank', 'Bank Transfer'),
     ]
 
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='orders', null=True, blank=True)
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='orders',
+        null=True,
+        blank=True
+    )
+
     customer_name = models.CharField(max_length=255)
     customer_email = models.EmailField()
     total_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
-    status = models.CharField(max_length=50, choices=STATUS_CHOICES, default='draft')
-    payment_status = models.CharField(max_length=20, choices=PAYMENT_STATUS_CHOICES, default='pending')
-    payment_method = models.CharField(max_length=20, choices=PAYMENT_METHOD_CHOICES, blank=True, null=True)
+
+    status = models.CharField(
+        max_length=50,
+        choices=STATUS_CHOICES,
+        default='draft'
+    )
+
+    payment_status = models.CharField(
+        max_length=20,
+        choices=PAYMENT_STATUS_CHOICES,
+        default='pending'
+    )
+
+    payment_method = models.CharField(
+        max_length=20,
+        choices=PAYMENT_METHOD_CHOICES,
+        blank=True,
+        null=True
+    )
+
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
@@ -104,21 +128,47 @@ class Order(models.Model):
 
         if not is_new:
             previous = Order.objects.get(pk=self.pk)
-            if previous.status != 'waiting_user_received' and self.status == 'waiting_user_received':
-                super().save(*args, **kwargs)
+
+            if (
+                previous.status != 'waiting_user_received'
+                and self.status == 'waiting_user_received'
+            ):
+
+                # Check stock before approval
                 for item in self.items.all():
-                    item.product.stock -= item.quantity
-                    item.product.save()
+                    if item.product.stock < item.quantity:
+                        raise ValueError(
+                            f"Not enough stock for {item.product.name}."
+                        )
+
+                super().save(*args, **kwargs)
+
+                # Deduct stock once
+                for item in self.items.all():
+                    product = item.product
+                    product.stock -= item.quantity
+                    product.save(update_fields=['stock'])
+
                 return
 
         super().save(*args, **kwargs)
 
 
 class OrderItem(models.Model):
-    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='items')
+    order = models.ForeignKey(
+        Order,
+        on_delete=models.CASCADE,
+        related_name='items'
+    )
+
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
+
     quantity = models.IntegerField()
-    unit_price = models.DecimalField(max_digits=10, decimal_places=2)
+
+    unit_price = models.DecimalField(
+        max_digits=10,
+        decimal_places=2
+    )
 
     def __str__(self):
         return f"{self.product.name} x {self.quantity}"
@@ -129,8 +179,20 @@ class OrderItem(models.Model):
 
 
 class Rating(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='ratings', null=True, blank=True)
-    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='ratings')
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='ratings',
+        null=True,
+        blank=True
+    )
+
+    product = models.ForeignKey(
+        Product,
+        on_delete=models.CASCADE,
+        related_name='ratings'
+    )
+
     customer_name = models.CharField(max_length=255)
     stars = models.IntegerField()
     comment = models.TextField(blank=True, null=True)
@@ -138,7 +200,10 @@ class Rating(models.Model):
 
     class Meta:
         constraints = [
-            models.UniqueConstraint(fields=['user', 'product'], name='unique_user_product_rating')
+            models.UniqueConstraint(
+                fields=['user', 'product'],
+                name='unique_user_product_rating'
+            )
         ]
 
     def __str__(self):
