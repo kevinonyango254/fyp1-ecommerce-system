@@ -134,11 +134,11 @@ def checkout_cart(request):
         return redirect('view_cart')
 
     for item in cart.items.all():
-    if item.quantity > item.product.stock:
-        return render(request, 'core/cart.html', {
-            'cart': cart,
-            'error': f"Sorry, only {item.product.stock} unit(s) of '{item.product.name}' are currently available."
-        })
+        if item.quantity > item.product.stock:
+            return render(request, 'core/cart.html', {
+                'cart': cart,
+                'error': f"Sorry, only {item.product.stock} unit(s) of '{item.product.name}' are currently available."
+            })
 
     total_amount = sum(item.subtotal for item in cart.items.all())
 
