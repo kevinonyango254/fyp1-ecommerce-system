@@ -37,6 +37,33 @@
             {% csrf_token %}
 
             <div style="margin-bottom: 18px;">
+                <label style="display:block; font-weight:bold; margin-bottom:8px;">
+                    Send To
+                </label>
+
+                <select
+                    name="receiver"
+                    required
+                    style="
+                        width:100%;
+                        padding:14px;
+                        border:1px solid #cbd5e1;
+                        border-radius:10px;
+                        font-size:15px;
+                        box-sizing:border-box;
+                    "
+                >
+                    <option value="">-- Select Support Staff --</option>
+
+                    {% for profile in support_users %}
+                        <option value="{{ profile.id }}">
+                            {{ profile.user.username }} ({{ profile.role|title }})
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div style="margin-bottom: 18px;">
                 <label style="display: block; font-weight: bold; margin-bottom: 8px;">Subject</label>
                 <input
                     type="text"
@@ -75,12 +102,17 @@
                     "
                     required
                 >{{ form.content.value|default:'' }}</textarea>
+
                 {% if form.content.errors %}
-                    <div style="color: #b91c1c; margin-top: 8px;">{{ form.content.errors }}</div>
+                    <div style="color: #b91c1c; margin-top: 8px;">
+                        {{ form.content.errors }}
+                    </div>
                 {% endif %}
             </div>
 
-            <button type="submit" class="btn">Send Message</button>
+            <button type="submit" class="btn">
+                Send Message
+            </button>
         </form>
     </div>
 </div>

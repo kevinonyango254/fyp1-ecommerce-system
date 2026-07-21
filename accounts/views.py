@@ -178,33 +178,39 @@ def contact_support(request):
 
     error = None
 
+    # Get all available staff members
+    support_users = UserProfile.objects.filter(
+        role__in=['support', 'admin']
+    ).select_related('user').order_by('role', 'user__username')
+
     if request.method == 'POST':
         form = ContactSupportForm(request.POST)
+
+        receiver_id = request.POST.get('receiver')
+
         if form.is_valid():
-            support_profile = UserProfile.objects.filter(role='support').select_related('user').first()
-            admin_profile = UserProfile.objects.filter(role='admin').select_related('user').first()
+            try:
+                receiver_profile = support_users.get(id=receiver_id)
+            except UserProfile.DoesNotExist:
+                receiver_profile = None
 
-            receiver_user = None
-
-            if support_profile:
-                receiver_user = support_profile.user
-            elif admin_profile:
-                receiver_user = admin_profile.user
-
-            if receiver_user is None:
-                error = 'No support or admin account is available yet. Please create one first.'
+            if receiver_profile is None:
+                error = 'Please select a support staff member.'
             else:
                 first_message = MailboxMessage.objects.create(
                     sender=request.user,
-                    receiver=receiver_user,
+                    receiver=receiver_profile.user,
                     subject=form.cleaned_data['subject'],
                     content=form.cleaned_data['content']
                 )
+
                 return redirect('mailbox_detail', message_id=first_message.id)
+
     else:
         form = ContactSupportForm()
 
     return render(request, 'accounts/contact_support.html', {
         'form': form,
-        'error': error
+        'error': error,
+        'support_users': support_users,
     })
