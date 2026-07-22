@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>{% block title %}SmartCommerce{% endblock %}</title>
+    <title>{% block title %}GoBuy{% endblock %}</title>
+
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -127,12 +128,15 @@
         }
     </style>
 </head>
+
 <body>
 
     <nav>
         <div class="nav-container">
+
             <div class="nav-left">
-                <a href="/" class="brand">🛒 SmartCommerce</a>
+                <a href="/" class="brand">🛒 GoBuy</a>
+
                 <a href="/">Home</a>
                 <a href="/products/">Products</a>
                 <a href="/about/">About Us</a>
@@ -140,11 +144,14 @@
 
             <div class="nav-right">
                 {% if user.is_authenticated %}
+
                     {% if user.userprofile.role == 'admin' %}
                         <a href="/admin-dashboard/">Admin Dashboard</a>
                         <a href="/admin-products/">Manage Products</a>
+
                     {% elif user.userprofile.role == 'support' %}
                         <a href="/mailbox/">Support Inbox</a>
+
                     {% else %}
                         <a href="/my-orders/">My Orders</a>
                     {% endif %}
@@ -163,13 +170,20 @@
                         </a>
                     {% endif %}
 
-                    <span class="welcome-text">Welcome, {{ user.username }}</span>
+                    <span class="welcome-text">
+                        Welcome, {{ user.username }}
+                    </span>
+
                     <a href="/logout/">Logout</a>
+
                 {% else %}
+
                     <a href="/login/">Login</a>
                     <a href="/register/">Register</a>
+
                 {% endif %}
             </div>
+
         </div>
     </nav>
 

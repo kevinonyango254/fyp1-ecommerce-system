@@ -1,0 +1,42 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Add Category{% endblock %}
+
+{% block content %}
+
+<h1>Add Category</h1>
+
+<form method="post">
+
+    {% csrf_token %}
+
+    <p>
+        <label><strong>Category Name</strong></label><br>
+        <input
+            type="text"
+            name="name"
+            required
+            style="
+                width:350px;
+                padding:10px;
+                border:1px solid #ccc;
+                border-radius:6px;
+            "
+        >
+    </p>
+
+    <br>
+
+    <button type="submit" class="btn">
+        Save Category
+    </button>
+
+    <a href="{% url 'admin_categories' %}"
+       class="btn"
+       style="background:#6c757d;">
+        Cancel
+    </a>
+
+</form>
+
+{% endblock %}

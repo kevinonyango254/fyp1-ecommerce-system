@@ -2,7 +2,9 @@
 
 {% block content %}
 <h2>Add Product</h2>
-
+<p style="color:red; font-weight:bold;">
+Categories found: {{ categories|length }}
+</p>
 <form method="post" enctype="multipart/form-data">
     {% csrf_token %}
 

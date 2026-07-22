@@ -392,8 +392,11 @@ def add_product(request):
 
         return redirect('admin_products')
 
+    categories = Category.objects.all()
+
+
     return render(request, 'core/add_product.html', {
-        'categories': Category.objects.all()
+        'categories': categories,
     })
 
 
@@ -617,3 +620,58 @@ def change_user_role(request, user_id):
             user.userprofile.save()
 
     return redirect('admin_users')
+
+@login_required
+def admin_categories(request):
+    if request.user.userprofile.role != 'admin':
+        return redirect('home')
+
+    categories = Category.objects.all().order_by('name')
+
+    return render(request, 'core/admin_categories.html', {
+        'categories': categories
+    })
+
+
+@login_required
+def add_category(request):
+    if request.user.userprofile.role != 'admin':
+        return redirect('home')
+
+    if request.method == 'POST':
+        name = request.POST.get('name')
+
+        if name:
+            Category.objects.create(name=name)
+
+        return redirect('admin_categories')
+
+    return render(request, 'core/add_category.html')
+
+
+@login_required
+def edit_category(request, category_id):
+    if request.user.userprofile.role != 'admin':
+        return redirect('home')
+
+    category = get_object_or_404(Category, id=category_id)
+
+    if request.method == 'POST':
+        category.name = request.POST.get('name')
+        category.save()
+        return redirect('admin_categories')
+
+    return render(request, 'core/edit_category.html', {
+        'category': category
+    })
+
+
+@login_required
+def delete_category(request, category_id):
+    if request.user.userprofile.role != 'admin':
+        return redirect('home')
+
+    category = get_object_or_404(Category, id=category_id)
+    category.delete()
+
+    return redirect('admin_categories')

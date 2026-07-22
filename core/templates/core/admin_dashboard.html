@@ -4,12 +4,28 @@
 
 {% block content %}
 <h2 style="margin-bottom: 10px;">Admin Dashboard</h2>
-<p style="color: #555; margin-bottom: 20px;">Manage customer orders, view purchased items, and control workflow status.</p>
+<p style="color: #555; margin-bottom: 20px;">
+    Manage customer orders, products, categories, advertisements, users, and workflow status.
+</p>
 
 <div style="display: flex; gap: 14px; flex-wrap: wrap; margin-bottom: 20px;">
-    <a href="/admin-products/" class="btn">Manage Products</a>
-    <a href="/admin-advertisements/" class="btn">Manage Advertisements</a>
-    <a href="/admin-users/" class="btn" style="background:#6f42c1;">Manage Users</a>
+    <a href="{% url 'admin_products' %}" class="btn">Manage Products</a>
+
+    <a href="{% url 'admin_categories' %}"
+       class="btn"
+       style="background:#20c997;">
+        Manage Categories
+    </a>
+
+    <a href="{% url 'admin_advertisements' %}" class="btn">
+        Manage Advertisements
+    </a>
+
+    <a href="{% url 'admin_users' %}"
+       class="btn"
+       style="background:#6f42c1;">
+        Manage Users
+    </a>
 </div>
 
 <form method="GET"
@@ -45,7 +61,7 @@
         Apply
     </button>
 
-    <a href="/admin-dashboard/"
+    <a href="{% url 'admin_dashboard' %}"
        style="background:#6c757d; color:white; padding:10px 18px; border-radius:8px; text-decoration:none;">
         Reset
     </a>
@@ -53,117 +69,143 @@
 </form>
 
 {% if orders %}
-    <div style="overflow-x: auto;">
-        <table style="width: 100%; border-collapse: collapse; background: white; border-radius: 16px; overflow: hidden; box-shadow: 0 6px 18px rgba(0,0,0,0.06);">
-            <thead>
-                <tr style="background: linear-gradient(to right, #1f4e79, #2c6ca6); color: white;">
-                    <th style="padding: 14px; text-align: left;">Order ID</th>
-                    <th style="padding: 14px; text-align: left;">Date</th>
-                    <th style="padding: 14px; text-align: left;">Customer</th>
-                    <th style="padding: 14px; text-align: left;">Order Items</th>
-                    <th style="padding: 14px; text-align: left;">Quantity</th>
-                    <th style="padding: 14px; text-align: left;">RM / Unit</th>
-                    <th style="padding: 14px; text-align: left;">Total (RM)</th>
-                    <th style="padding: 14px; text-align: left;">Status</th>
-                    <th style="padding: 14px; text-align: left;">Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for order in orders %}
-                <tr style="border-bottom: 1px solid #e5e7eb; vertical-align: top;">
-                    <td style="padding: 14px; font-weight: bold;">#{{ order.id }}</td>
+<div style="overflow-x:auto;">
 
-                    <td style="padding: 14px; color: #555;">
-                        {{ order.created_at|date:"F j, Y" }}<br>
-                        <span style="font-size: 13px;">{{ order.created_at|date:"g:i a" }}</span>
-                    </td>
+<table style="width:100%; border-collapse:collapse; background:white; border-radius:16px; overflow:hidden; box-shadow:0 6px 18px rgba(0,0,0,0.06);">
 
-                    <td style="padding: 14px;">
-                        <strong>{{ order.customer_name }}</strong><br>
-                        <span style="color:#666; font-size:14px;">{{ order.customer_email }}</span>
-                    </td>
+    <thead>
+        <tr style="background:linear-gradient(to right,#1f4e79,#2c6ca6); color:white;">
+            <th style="padding:14px;">Order ID</th>
+            <th style="padding:14px;">Date</th>
+            <th style="padding:14px;">Customer</th>
+            <th style="padding:14px;">Order Items</th>
+            <th style="padding:14px;">Quantity</th>
+            <th style="padding:14px;">RM / Unit</th>
+            <th style="padding:14px;">Total (RM)</th>
+            <th style="padding:14px;">Status</th>
+            <th style="padding:14px;">Action</th>
+        </tr>
+    </thead>
 
-                    <td style="padding: 14px;">
-                        {% for item in order.items.all %}
-                            <div style="margin-bottom: 8px;">
-                                {{ item.product.name }}
-                            </div>
-                        {% endfor %}
-                    </td>
+    <tbody>
 
-                    <td style="padding: 14px;">
-                        {% for item in order.items.all %}
-                            <div style="margin-bottom: 8px;">
-                                {{ item.quantity }}
-                            </div>
-                        {% endfor %}
-                    </td>
+    {% for order in orders %}
 
-                    <td style="padding: 14px;">
-                        {% for item in order.items.all %}
-                            <div style="margin-bottom: 8px;">
-                                {{ item.unit_price }}
-                            </div>
-                        {% endfor %}
-                    </td>
+    <tr style="border-bottom:1px solid #e5e7eb; vertical-align:top;">
 
-                    <td style="padding: 14px; font-weight: bold;">
-                        {{ order.total_amount }}
-                    </td>
+        <td style="padding:14px;">
+            <strong>#{{ order.id }}</strong>
+        </td>
 
-                    <td style="padding: 14px;">
-                        {% if order.status == 'draft' %}
-                            <span style="background: #6c757d; color: white; padding: 6px 12px; border-radius: 20px; font-size: 14px;">
-                                Draft
-                            </span>
-                        {% elif order.status == 'waiting_admin_approve' %}
-                            <span style="background: #f0ad4e; color: white; padding: 6px 12px; border-radius: 20px; font-size: 14px;">
-                                Waiting Admin Approve
-                            </span>
-                        {% elif order.status == 'waiting_user_received' %}
-                            <span style="background: #0275d8; color: white; padding: 6px 12px; border-radius: 20px; font-size: 14px;">
-                                Waiting User Received Item
-                            </span>
-                        {% elif order.status == 'finished' %}
-                            <span style="background: #28a745; color: white; padding: 6px 12px; border-radius: 20px; font-size: 14px;">
-                                Finished
-                            </span>
-                        {% elif order.status == 'rejected' %}
-                            <span style="background: #dc3545; color: white; padding: 6px 12px; border-radius: 20px; font-size: 14px;">
-                                Rejected
-                            </span>
-                        {% else %}
-                            <span style="background: #999; color: white; padding: 6px 12px; border-radius: 20px; font-size: 14px;">
-                                {{ order.get_status_display }}
-                            </span>
-                        {% endif %}
-                    </td>
+        <td style="padding:14px;">
+            {{ order.created_at|date:"F j, Y" }}<br>
+            <span style="font-size:13px;">
+                {{ order.created_at|date:"g:i a" }}
+            </span>
+        </td>
 
-                    <td style="padding: 14px;">
-                        {% if order.status == 'waiting_admin_approve' %}
-                            <div style="display:flex; flex-direction:column; gap:10px;">
-                                <a href="/admin-dashboard/approve/{{ order.id }}/"
-                                   style="background: #28a745; color: white; padding: 8px 14px; border-radius: 8px; text-decoration: none; text-align:center;">
-                                    Approve
-                                </a>
-                                <a href="/admin-dashboard/reject/{{ order.id }}/"
-                                   style="background: #dc3545; color: white; padding: 8px 14px; border-radius: 8px; text-decoration: none; text-align:center;">
-                                    Reject
-                                </a>
-                            </div>
-                        {% else %}
-                            <span style="color: #777;">No action</span>
-                        {% endif %}
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
+        <td style="padding:14px;">
+            <strong>{{ order.customer_name }}</strong><br>
+            <span style="font-size:14px; color:#666;">
+                {{ order.customer_email }}
+            </span>
+        </td>
+
+        <td style="padding:14px;">
+            {% for item in order.items.all %}
+                <div style="margin-bottom:8px;">
+                    {{ item.product.name }}
+                </div>
+            {% endfor %}
+        </td>
+
+        <td style="padding:14px;">
+            {% for item in order.items.all %}
+                <div style="margin-bottom:8px;">
+                    {{ item.quantity }}
+                </div>
+            {% endfor %}
+        </td>
+
+        <td style="padding:14px;">
+            {% for item in order.items.all %}
+                <div style="margin-bottom:8px;">
+                    RM {{ item.unit_price }}
+                </div>
+            {% endfor %}
+        </td>
+
+        <td style="padding:14px;">
+            <strong>RM {{ order.total_amount }}</strong>
+        </td>
+
+        <td style="padding:14px;">
+
+            {% if order.status == 'draft' %}
+                <span style="background:#6c757d;color:white;padding:6px 12px;border-radius:20px;">Draft</span>
+
+            {% elif order.status == 'waiting_admin_approve' %}
+                <span style="background:#f0ad4e;color:white;padding:6px 12px;border-radius:20px;">Waiting Admin Approval</span>
+
+            {% elif order.status == 'waiting_user_received' %}
+                <span style="background:#0275d8;color:white;padding:6px 12px;border-radius:20px;">Waiting User Received</span>
+
+            {% elif order.status == 'finished' %}
+                <span style="background:#28a745;color:white;padding:6px 12px;border-radius:20px;">Finished</span>
+
+            {% elif order.status == 'rejected' %}
+                <span style="background:#dc3545;color:white;padding:6px 12px;border-radius:20px;">Rejected</span>
+
+            {% endif %}
+
+        </td>
+
+        <td style="padding:14px;">
+
+            {% if order.status == 'waiting_admin_approve' %}
+
+                <div style="display:flex; flex-direction:column; gap:10px;">
+
+                    <a href="{% url 'approve_order' order.id %}"
+                       style="background:#28a745;color:white;padding:8px 14px;border-radius:8px;text-decoration:none;text-align:center;">
+                        Approve
+                    </a>
+
+                    <a href="{% url 'reject_order' order.id %}"
+                       style="background:#dc3545;color:white;padding:8px 14px;border-radius:8px;text-decoration:none;text-align:center;">
+                        Reject
+                    </a>
+
+                </div>
+
+            {% else %}
+
+                <span style="color:#777;">
+                    No action
+                </span>
+
+            {% endif %}
+
+        </td>
+
+    </tr>
+
+    {% endfor %}
+
+    </tbody>
+
+</table>
+
+</div>
+
 {% else %}
-    <div style="background: white; padding: 30px; border-radius: 12px;">
-        <p style="margin: 0; font-size: 17px; color: #555;">No orders found.</p>
-    </div>
+
+<div style="background:white;padding:30px;border-radius:12px;">
+    <p style="margin:0;font-size:17px;color:#555;">
+        No orders found.
+    </p>
+</div>
+
 {% endif %}
 
 {% endblock %}

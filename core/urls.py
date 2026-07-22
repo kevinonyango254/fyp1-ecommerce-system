@@ -33,6 +33,11 @@ from .views import (
     user_orders,
     admin_users,
     change_user_role,
+    admin_categories,
+    admin_categories,
+    add_category,
+    edit_category,
+    delete_category,   
 )
 
 urlpatterns = [
@@ -63,6 +68,11 @@ urlpatterns = [
     path('admin-products/add/', add_product, name='add_product'),
     path('admin-products/edit/<int:product_id>/', edit_product, name='edit_product'),
     path('admin-products/delete/<int:product_id>/', delete_product, name='delete_product'),
+
+    path('admin-categories/', admin_categories, name='admin_categories'),
+    path('admin-categories/add/', add_category, name='add_category'),
+    path('admin-categories/edit/<int:category_id>/', edit_category, name='edit_category'),
+    path('admin-categories/delete/<int:category_id>/', delete_category, name='delete_category'),
 
     path('admin-advertisements/', admin_advertisements, name='admin_advertisements'),
     path('admin-advertisements/add/', add_advertisement, name='add_advertisement'),

@@ -1,0 +1,90 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Manage Categories{% endblock %}
+
+{% block content %}
+
+<h1>Manage Categories</h1>
+
+<div style="margin-bottom:20px;">
+    <a href="{% url 'add_category' %}" class="btn">
+        + Add Category
+    </a>
+</div>
+
+{% if categories %}
+
+<table style="
+    width:100%;
+    border-collapse:collapse;
+    background:white;
+    border-radius:10px;
+    overflow:hidden;
+    box-shadow:0 2px 8px rgba(0,0,0,.08);
+">
+
+    <thead style="background:#1f4e79;color:white;">
+        <tr>
+            <th style="padding:12px;">ID</th>
+            <th style="padding:12px;">Category Name</th>
+            <th style="padding:12px;">Products</th>
+            <th style="padding:12px;">Actions</th>
+        </tr>
+    </thead>
+
+    <tbody>
+
+    {% for category in categories %}
+
+        <tr style="border-bottom:1px solid #ddd;">
+
+            <td style="padding:12px;text-align:center;">
+                {{ category.id }}
+            </td>
+
+            <td style="padding:12px;">
+                {{ category.name }}
+            </td>
+
+            <td style="padding:12px;text-align:center;">
+                {{ category.products.count }}
+            </td>
+
+            <td style="padding:12px;text-align:center;">
+
+                <a href="{% url 'edit_category' category.id %}"
+                   class="btn"
+                   style="background:#17a2b8;">
+                    Edit
+                </a>
+
+                <a href="{% url 'delete_category' category.id %}"
+                   class="btn"
+                   style="background:#dc3545;"
+                   onclick="return confirm('Delete this category?');">
+                    Delete
+                </a>
+
+            </td>
+
+        </tr>
+
+    {% endfor %}
+
+    </tbody>
+
+</table>
+
+{% else %}
+
+<div style="
+    background:white;
+    padding:30px;
+    border-radius:10px;
+">
+    No categories available.
+</div>
+
+{% endif %}
+
+{% endblock %}
