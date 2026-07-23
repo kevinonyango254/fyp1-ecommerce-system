@@ -223,4 +223,7 @@ import traceback
 class DebugPasswordResetView(PasswordResetView):
     def form_valid(self, form):
         print("EMAILS FOUND:", list(form.get_users(form.cleaned_data["email"])))
-        return super().form_valid(form)
+        print("ABOUT TO SEND EMAIL")
+        response = super().form_valid(form)
+        print("EMAIL SEND FINISHED")
+        return response
