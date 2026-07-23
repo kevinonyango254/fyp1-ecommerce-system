@@ -214,3 +214,17 @@ def contact_support(request):
         'error': error,
         'support_users': support_users,
     })
+
+    from django.contrib.auth.views import PasswordResetView
+import traceback
+
+class DebugPasswordResetView(PasswordResetView):
+    def form_valid(self, form):
+        try:
+            return super().form_valid(form)
+        except Exception as e:
+            print("=" * 60)
+            print("PASSWORD RESET ERROR")
+            traceback.print_exc()
+            print("=" * 60)
+            raise

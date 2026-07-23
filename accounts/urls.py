@@ -7,6 +7,7 @@ from .views import (
     mailbox,
     mailbox_detail,
     contact_support,
+    DebugPasswordResetView,
 )
 
 urlpatterns = [
@@ -19,7 +20,7 @@ urlpatterns = [
 
     path(
         'password-reset/',
-        auth_views.PasswordResetView.as_view(
+        DebugPasswordResetView.as_view(
             template_name='registration/password_reset_form.html',
             email_template_name='registration/password_reset_email.html',
             subject_template_name='registration/password_reset_subject.txt'
