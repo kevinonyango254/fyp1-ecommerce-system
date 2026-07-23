@@ -13,6 +13,13 @@ from .models import (
     Rating,
 )
 from accounts.models import MailboxMessage
+import json
+import os
+
+import google.generativeai as genai
+from django.conf import settings
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
 
 
 def home(request):
@@ -675,3 +682,39 @@ def delete_category(request, category_id):
     category.delete()
 
     return redirect('admin_categories')
+
+@csrf_exempt
+def chatbot(request):
+    if request.method != "POST":
+        return JsonResponse({"error": "POST request required"}, status=405)
+
+    try:
+        data = json.loads(request.body)
+        user_message = data.get("message", "")
+
+        genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
+
+        model = genai.GenerativeModel("gemini-1.5-flash")
+
+        prompt = f"""
+        You are GoBuy's AI shopping assistant.
+
+        Help customers politely.
+        Recommend products.
+        Answer shopping questions.
+        Keep answers concise.
+
+        Customer:
+        {user_message}
+        """
+
+        response = model.generate_content(prompt)
+
+        return JsonResponse({
+            "reply": response.text
+        })
+
+    except Exception as e:
+        return JsonResponse({
+            "error": str(e)
+        }, status=500)

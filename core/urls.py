@@ -37,7 +37,9 @@ from .views import (
     admin_categories,
     add_category,
     edit_category,
-    delete_category,   
+    delete_category,
+    chatbot,
+    chatbot_page,   
 )
 
 urlpatterns = [
@@ -88,4 +90,7 @@ urlpatterns = [
     path('my-orders/', user_orders, name='user_orders'),
     path('my-orders/confirm/<int:order_id>/', confirm_received, name='confirm_received'),
     path('my-orders/not-received/<int:order_id>/', not_received, name='not_received'),
+
+    path("ai-chat/", chatbot_page, name="chatbot_page"),
+    path("chatbot/", chatbot, name="chatbot"),
 ]
