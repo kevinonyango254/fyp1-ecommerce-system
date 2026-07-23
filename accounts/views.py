@@ -3,8 +3,10 @@ from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.sessions.models import Session
 from django.db.models import Q
+from django.contrib.auth.views import PasswordResetView
 from .forms import RegisterForm, ContactSupportForm
 from .models import UserProfile, MailboxMessage
+import traceback
 
 
 def register_view(request):
