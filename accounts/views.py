@@ -6,7 +6,6 @@ from django.db.models import Q
 from django.contrib.auth.views import PasswordResetView
 from .forms import RegisterForm, ContactSupportForm
 from .models import UserProfile, MailboxMessage
-import traceback
 
 
 def register_view(request):
@@ -218,22 +217,12 @@ def contact_support(request):
     })
 
 
-from django.core.mail import send_mail
-from django.conf import settings
-
-
 class DebugPasswordResetView(PasswordResetView):
     def form_valid(self, form):
         print("EMAILS FOUND:", list(form.get_users(form.cleaned_data["email"])))
+        print("ABOUT TO SEND EMAIL")
 
-        result = send_mail(
-            subject="SMTP Test",
-            message="This is a direct SMTP test.",
-            from_email=settings.DEFAULT_FROM_EMAIL,
-            recipient_list=["superadmin254@gmail.com"],
-            fail_silently=False,
-        )
+        response = super().form_valid(form)
 
-        print("SEND_MAIL RESULT =", result)
-
-        return super().form_valid(form)
+        print("EMAIL SEND FINISHED")
+        return response
