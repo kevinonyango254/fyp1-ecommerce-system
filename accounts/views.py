@@ -220,10 +220,25 @@ def contact_support(request):
     from django.contrib.auth.views import PasswordResetView
 import traceback
 
+from django.core.mail import send_mail
+from django.conf import settings
+
 class DebugPasswordResetView(PasswordResetView):
     def form_valid(self, form):
         print("EMAILS FOUND:", list(form.get_users(form.cleaned_data["email"])))
-        print("ABOUT TO SEND EMAIL")
+
+        result = send_mail(
+            "SMTP Test",
+            "This is a direct SMTP test.",
+            settings.DEFAULT_FROM_EMAIL,
+            ["superadmin254@gmail.com"],
+            fail_silently=False,
+        )
+
+        print("SEND_MAIL RESULT =", result)
+
         response = super().form_valid(form)
-        print("EMAIL SEND FINISHED")
+
+        print("PASSWORD RESET EMAIL SENT")
+
         return response
