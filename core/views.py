@@ -718,3 +718,6 @@ def chatbot(request):
         return JsonResponse({
             "error": str(e)
         }, status=500)
+
+def chatbot_page(request):
+    return render(request, "core/chatbot.html")
