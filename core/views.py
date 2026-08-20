@@ -242,14 +242,29 @@ def process_payment(request, order_id):
         payment_method = request.POST.get('payment_method')
 
         if payment_method:
+            # Prevent stock from being deducted more than once
+            if order.payment_status != 'paid':
+                # Check stock availability again before deducting
+                for item in order.items.all():
+                    if item.quantity > item.product.stock:
+                        return render(request, 'core/payment_page.html', {
+                            'order': order,
+                            'error': f"Sorry, only {item.product.stock} unit(s) of '{item.product.name}' are available."
+                        })
+
+                # Automatically reduce stock after successful payment
+                for item in order.items.all():
+                    item.product.stock -= item.quantity
+                    item.product.save()
+
             order.payment_method = payment_method
             order.payment_status = 'paid'
             order.status = 'waiting_admin_approve'
             order.save()
+
             return redirect('order_success', order_id=order.id)
 
     return redirect('payment_page', order_id=order.id)
-
 
 def order_success(request, order_id):
     order = get_object_or_404(Order, id=order_id)
