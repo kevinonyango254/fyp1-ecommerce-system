@@ -1,0 +1,157 @@
+```html
+{% extends 'core/base.html' %}
+
+{% block title %}New Message{% endblock %}
+
+{% block content %}
+<div style="max-width: 800px; margin: 0 auto;">
+    <div style="
+        background: white;
+        padding: 30px;
+        border-radius: 18px;
+        box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+    ">
+        <div style="margin-bottom: 18px;">
+            <a href="/mailbox/" style="
+                text-decoration: none;
+                color: #1f4e79;
+                font-weight: bold;
+            ">
+                ← Back to Mailbox
+            </a>
+        </div>
+
+        <h2 style="margin-top: 0; color: #1f4e79;">
+            New Message
+        </h2>
+
+        <p style="
+            color: #555;
+            line-height: 1.7;
+            margin-bottom: 24px;
+        ">
+            As a support staff member, you can contact users,
+            other support staff, and administrators.
+        </p>
+
+        {% if error %}
+            <div style="
+                background: #fee2e2;
+                color: #991b1b;
+                padding: 12px 14px;
+                border-radius: 10px;
+                margin-bottom: 18px;
+            ">
+                {{ error }}
+            </div>
+        {% endif %}
+
+        <form method="post">
+            {% csrf_token %}
+
+            <div style="margin-bottom: 18px;">
+                <label style="
+                    display:block;
+                    font-weight:bold;
+                    margin-bottom:8px;
+                ">
+                    Send To
+                </label>
+
+                <select
+                    name="receiver"
+                    required
+                    style="
+                        width:100%;
+                        padding:14px;
+                        border:1px solid #cbd5e1;
+                        border-radius:10px;
+                        font-size:15px;
+                        box-sizing:border-box;
+                    "
+                >
+                    <option value="">
+                        -- Select Recipient --
+                    </option>
+
+                    {% for profile in recipients %}
+                        <option value="{{ profile.id }}">
+                            {{ profile.user.username }}
+                            ({{ profile.role|title }})
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div style="margin-bottom: 18px;">
+                <label style="
+                    display:block;
+                    font-weight:bold;
+                    margin-bottom:8px;
+                ">
+                    Subject
+                </label>
+
+                <input
+                    type="text"
+                    name="subject"
+                    value="{{ form.subject.value|default:'' }}"
+                    placeholder="Enter subject"
+                    required
+                    style="
+                        width:100%;
+                        padding:14px;
+                        border:1px solid #cbd5e1;
+                        border-radius:10px;
+                        font-size:15px;
+                        box-sizing:border-box;
+                    "
+                >
+
+                {% if form.subject.errors %}
+                    <div style="color:#b91c1c; margin-top:8px;">
+                        {{ form.subject.errors }}
+                    </div>
+                {% endif %}
+            </div>
+
+            <div style="margin-bottom:22px;">
+                <label style="
+                    display:block;
+                    font-weight:bold;
+                    margin-bottom:8px;
+                ">
+                    Message
+                </label>
+
+                <textarea
+                    name="content"
+                    rows="7"
+                    placeholder="Write your message..."
+                    required
+                    style="
+                        width:100%;
+                        padding:14px;
+                        border:1px solid #cbd5e1;
+                        border-radius:10px;
+                        font-size:15px;
+                        box-sizing:border-box;
+                        resize:vertical;
+                    "
+                >{{ form.content.value|default:'' }}</textarea>
+
+                {% if form.content.errors %}
+                    <div style="color:#b91c1c; margin-top:8px;">
+                        {{ form.content.errors }}
+                    </div>
+                {% endif %}
+            </div>
+
+            <button type="submit" class="btn">
+                Send Message
+            </button>
+        </form>
+    </div>
+</div>
+{% endblock %}
+```

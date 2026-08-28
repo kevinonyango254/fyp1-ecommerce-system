@@ -7,6 +7,7 @@ from .views import (
     mailbox,
     mailbox_detail,
     contact_support,
+    new_message,
     DebugPasswordResetView,
 )
 
@@ -17,6 +18,7 @@ urlpatterns = [
     path('mailbox/', mailbox, name='mailbox'),
     path('mailbox/<int:message_id>/', mailbox_detail, name='mailbox_detail'),
     path('contact-support/', contact_support, name='contact_support'),
+    path('new-message/', new_message, name='new_message'),
 
     path(
         'password-reset/',
