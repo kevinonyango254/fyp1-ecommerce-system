@@ -33,13 +33,13 @@ from .views import (
     user_orders,
     admin_users,
     change_user_role,
-    admin_categories,
+    delete_user,
     admin_categories,
     add_category,
     edit_category,
     delete_category,
     chatbot,
-    chatbot_page,   
+    chatbot_page,
 )
 
 urlpatterns = [
@@ -80,9 +80,10 @@ urlpatterns = [
     path('admin-advertisements/add/', add_advertisement, name='add_advertisement'),
     path('admin-advertisements/edit/<int:advertisement_id>/', edit_advertisement, name='edit_advertisement'),
     path('admin-advertisements/delete/<int:advertisement_id>/', delete_advertisement, name='delete_advertisement'),
-    
+
     path('admin-users/', admin_users, name='admin_users'),
     path('admin-users/change-role/<int:user_id>/', change_user_role, name='change_user_role'),
+    path('admin-users/delete/<int:user_id>/', delete_user, name='delete_user'),
 
     path('admin-dashboard/approve/<int:order_id>/', approve_order, name='approve_order'),
     path('admin-dashboard/reject/<int:order_id>/', reject_order, name='reject_order'),

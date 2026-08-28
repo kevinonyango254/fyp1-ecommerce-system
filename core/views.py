@@ -611,14 +611,14 @@ def user_orders(request):
 
 @login_required
 def admin_users(request):
-    if request.user.userprofile.role not in ['admin', 'support']:
+    if request.user.userprofile.role != 'admin':
         return redirect('home')
 
     role = request.GET.get('role', '')
 
-    users = User.objects.all()
+    users = User.objects.all().select_related('userprofile')
 
-    if role:
+    if role in ['user', 'support', 'admin']:
         users = users.filter(userprofile__role=role)
 
     return render(request, 'core/admin_users.html', {
@@ -638,8 +638,31 @@ def change_user_role(request, user_id):
         new_role = request.POST.get('role')
 
         if new_role in ['admin', 'support', 'user']:
-            user.userprofile.role = new_role
-            user.userprofile.save()
+            old_role = user.userprofile.role
+
+            if old_role != new_role:
+                user.userprofile.role = new_role
+                user.userprofile.save()
+
+                return redirect(
+                    f'/admin-users/?role={request.GET.get("role", "")}&role_changed=1'
+                )
+
+    return redirect('admin_users')
+
+@login_required
+def delete_user(request, user_id):
+    if request.user.userprofile.role != 'admin':
+        return redirect('home')
+
+    user = get_object_or_404(User, id=user_id)
+
+    # Prevent admin from deleting their own account
+    if user == request.user:
+        return redirect('admin_users')
+
+    if request.method == 'POST':
+        user.delete()
 
     return redirect('admin_users')
 

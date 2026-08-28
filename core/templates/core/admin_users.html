@@ -5,19 +5,141 @@
 {% block content %}
 
 <h2 style="margin-bottom:10px;">Manage Users</h2>
+
 <p style="color:#666; margin-bottom:25px;">
-    View all registered users and assign roles.
+    View all registered users, filter by role, assign roles, or delete users.
 </p>
 
+{% if request.GET.role_changed %} <div style="
+     background:#dcfce7;
+     color:#166534;
+     padding:14px 18px;
+     border-radius:10px;
+     margin-bottom:20px;
+     border:1px solid #bbf7d0;
+ ">
+User role has been updated successfully. </div>
+{% endif %}
+
+<!-- Role Filter -->
+
+<div style="
+    background:white;
+    padding:18px;
+    margin-bottom:25px;
+    border-radius:14px;
+    box-shadow:0 5px 14px rgba(0,0,0,0.06);
+">
+    <form method="get" style="
+        display:flex;
+        gap:10px;
+        align-items:center;
+        flex-wrap:wrap;
+    ">
+
+
+    <label style="font-weight:bold; color:#333;">
+        Filter by Role:
+    </label>
+
+    <select
+        name="role"
+        style="
+            padding:10px 12px;
+            border:1px solid #cbd5e1;
+            border-radius:8px;
+            font-size:14px;
+        "
+    >
+        <option value="">All Users</option>
+
+        <option value="user"
+            {% if selected_role == 'user' %}selected{% endif %}>
+            Users
+        </option>
+
+        <option value="support"
+            {% if selected_role == 'support' %}selected{% endif %}>
+            Support
+        </option>
+
+        <option value="admin"
+            {% if selected_role == 'admin' %}selected{% endif %}>
+            Admins
+        </option>
+    </select>
+
+    <button
+        type="submit"
+        style="
+            padding:10px 16px;
+            background:#1f4e79;
+            color:white;
+            border:none;
+            border-radius:8px;
+            cursor:pointer;
+            font-weight:bold;
+        "
+    >
+        Filter
+    </button>
+
+    <a
+        href="/admin-users/"
+        style="
+            padding:10px 16px;
+            background:#e5e7eb;
+            color:#333;
+            text-decoration:none;
+            border-radius:8px;
+            font-weight:bold;
+        "
+    >
+        Clear
+    </a>
+
+</form>
+
+
+</div>
+
+<!-- Users Table -->
+
 <div style="overflow-x:auto;">
-<table style="width:100%; border-collapse:collapse; background:white; border-radius:15px; overflow:hidden; box-shadow:0 6px 16px rgba(0,0,0,.08);">
+
+
+<table style="
+    width:100%;
+    border-collapse:collapse;
+    background:white;
+    border-radius:15px;
+    overflow:hidden;
+    box-shadow:0 6px 16px rgba(0,0,0,.08);
+">
 
     <thead>
         <tr style="background:#1f4e79; color:white;">
-            <th style="padding:14px; text-align:left;">Username</th>
-            <th style="padding:14px; text-align:left;">Email</th>
-            <th style="padding:14px; text-align:left;">Current Role</th>
-            <th style="padding:14px; text-align:left;">Change Role</th>
+
+            <th style="padding:14px; text-align:left;">
+                Username
+            </th>
+
+            <th style="padding:14px; text-align:left;">
+                Email
+            </th>
+
+            <th style="padding:14px; text-align:left;">
+                Current Role
+            </th>
+
+            <th style="padding:14px; text-align:left;">
+                Change Role
+            </th>
+
+            <th style="padding:14px; text-align:left;">
+                Delete
+            </th>
+
         </tr>
     </thead>
 
@@ -41,6 +163,7 @@
                 </strong>
             </td>
 
+            <!-- Change Role -->
             <td style="padding:14px;">
 
                 {% if user == request.user %}
@@ -51,43 +174,103 @@
 
                 {% else %}
 
-                <form method="post"
-                      action="/admin-users/change-role/{{ user.id }}/">
+                    <form
+                        method="post"
+                        action="/admin-users/change-role/{{ user.id }}/"
+                        onsubmit="return confirm('Are you sure you want to change this user\'s role?');"
+                    >
 
-                    {% csrf_token %}
+                        {% csrf_token %}
 
-                    <select name="role"
-                            style="padding:8px; border-radius:6px;">
+                        <select
+                            name="role"
+                            style="
+                                padding:8px;
+                                border-radius:6px;
+                                border:1px solid #cbd5e1;
+                            "
+                        >
 
-                        <option value="user"
-                            {% if user.userprofile.role == 'user' %}selected{% endif %}>
-                            User
-                        </option>
+                            <option value="user"
+                                {% if user.userprofile.role == 'user' %}
+                                    selected
+                                {% endif %}>
+                                User
+                            </option>
 
-                        <option value="support"
-                            {% if user.userprofile.role == 'support' %}selected{% endif %}>
-                            Support
-                        </option>
+                            <option value="support"
+                                {% if user.userprofile.role == 'support' %}
+                                    selected
+                                {% endif %}>
+                                Support
+                            </option>
 
-                        <option value="admin"
-                            {% if user.userprofile.role == 'admin' %}selected{% endif %}>
-                            Admin
-                        </option>
+                            <option value="admin"
+                                {% if user.userprofile.role == 'admin' %}
+                                    selected
+                                {% endif %}>
+                                Admin
+                            </option>
 
-                    </select>
+                        </select>
 
-                    <button type="submit"
-                        style="margin-left:8px;
-                               padding:8px 12px;
-                               background:#28a745;
-                               color:white;
-                               border:none;
-                               border-radius:6px;
-                               cursor:pointer;">
-                        Update
-                    </button>
+                        <button
+                            type="submit"
+                            style="
+                                margin-left:8px;
+                                padding:8px 12px;
+                                background:#28a745;
+                                color:white;
+                                border:none;
+                                border-radius:6px;
+                                cursor:pointer;
+                                font-weight:bold;
+                            "
+                        >
+                            Update
+                        </button>
 
-                </form>
+                    </form>
+
+                {% endif %}
+
+            </td>
+
+            <!-- Delete User -->
+            <td style="padding:14px;">
+
+                {% if user == request.user %}
+
+                    <span style="color:#888;">
+                        Cannot delete yourself
+                    </span>
+
+                {% else %}
+
+                    <form
+                        method="post"
+                        action="/admin-users/delete/{{ user.id }}/"
+                        onsubmit="return confirm('WARNING: Are you sure you want to permanently delete {{ user.username }}? This action cannot be undone.');"
+                    >
+
+                        {% csrf_token %}
+
+                        <button
+                            type="submit"
+                            style="
+                                padding:8px 12px;
+                                background:#dc3545;
+                                color:white;
+                                border:none;
+                                border-radius:6px;
+                                cursor:pointer;
+                                font-weight:bold;
+                            "
+                        >
+                            Delete
+                        </button>
+
+                    </form>
 
                 {% endif %}
 
@@ -95,11 +278,28 @@
 
         </tr>
 
+    {% empty %}
+
+        <tr>
+            <td
+                colspan="5"
+                style="
+                    padding:30px;
+                    text-align:center;
+                    color:#666;
+                "
+            >
+                No users found for this role.
+            </td>
+        </tr>
+
     {% endfor %}
 
     </tbody>
 
 </table>
+
+
 </div>
 
 {% endblock %}
