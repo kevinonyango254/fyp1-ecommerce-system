@@ -19,6 +19,7 @@ from .views import (
     order_detail,
     admin_dashboard,
     admin_notifications,
+    mark_notification_read,
     inventory_movement_report,
     admin_products,
     add_product,
@@ -69,7 +70,16 @@ urlpatterns = [
 
     path('admin-dashboard/', admin_dashboard, name='admin_dashboard'),
     path('admin-notifications/', admin_notifications, name='admin_notifications'),
-    path('inventory-movement-report/', inventory_movement_report, name='inventory_movement_report'),
+    path(
+        'admin-notifications/read/<int:notification_id>/',
+        mark_notification_read,
+        name='mark_notification_read'
+    ),
+    path(
+        'inventory-movement-report/',
+        inventory_movement_report,
+        name='inventory_movement_report'
+    ),
 
     path('admin-products/', admin_products, name='admin_products'),
     path('admin-products/add/', add_product, name='add_product'),

@@ -55,9 +55,22 @@
 
                     </div>
 
-                    <small class="text-muted">
-                        {{ notification.created_at|date:"d M Y, h:i A" }}
-                    </small>
+                    <div class="d-flex justify-content-between align-items-center mt-3">
+
+                        <small class="text-muted">
+                            {{ notification.created_at|date:"d M Y, h:i A" }}
+                        </small>
+
+                        {% if not notification.is_read %}
+
+                            <a href="{% url 'mark_notification_read' notification.id %}"
+                               class="btn btn-sm btn-success">
+                                ✓ Mark as Read
+                            </a>
+
+                        {% endif %}
+
+                    </div>
 
                 </div>
 

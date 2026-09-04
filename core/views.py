@@ -525,6 +525,23 @@ def admin_notifications(request):
 
 
 @login_required
+def mark_notification_read(request, notification_id):
+    if request.user.userprofile.role != 'admin':
+        return redirect('home')
+
+    notification = get_object_or_404(
+        AdminNotification,
+        id=notification_id,
+        recipient=request.user
+    )
+
+    notification.is_read = True
+    notification.save()
+
+    return redirect('admin_notifications')
+
+
+@login_required
 def inventory_movement_report(request):
     if request.user.userprofile.role != 'admin':
         return redirect('home')
