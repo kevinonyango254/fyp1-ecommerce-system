@@ -62,7 +62,7 @@ def create_low_stock_notification(sender, instance, created, **kwargs):
     if low_stock_after_change and newly_low_or_reduced:
 
         admins = User.objects.filter(
-            is_staff=True,
+            userprofile__role__iexact='admin',
             is_active=True
         )
 
