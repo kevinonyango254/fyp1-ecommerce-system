@@ -1,0 +1,415 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+
+<style>
+    .inventory-report-container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+
+    .report-header {
+        margin-bottom: 25px;
+    }
+
+    .report-header h2 {
+        font-weight: 700;
+        margin-bottom: 6px;
+    }
+
+    .report-header p {
+        margin-bottom: 0;
+    }
+
+    .filter-card {
+        border: none;
+        border-radius: 12px;
+        box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
+        margin-bottom: 25px;
+    }
+
+    .filter-card .card-body {
+        padding: 22px;
+    }
+
+    .filter-card label {
+        font-weight: 600;
+        margin-bottom: 8px;
+    }
+
+    .filter-card .form-select {
+        min-height: 44px;
+        border-radius: 8px;
+    }
+
+    .filter-button {
+        min-height: 44px;
+        border-radius: 8px;
+        font-weight: 600;
+    }
+
+    .table-card {
+        border: none;
+        border-radius: 12px;
+        box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
+        overflow: hidden;
+    }
+
+    .table-card .card-body {
+        padding: 0;
+    }
+
+    .inventory-table {
+        width: 100%;
+        margin-bottom: 0;
+        border-collapse: collapse;
+    }
+
+    .inventory-table thead th {
+        background-color: #f8f9fa;
+        font-weight: 700;
+        color: #343a40;
+        padding: 15px 14px;
+        border-bottom: 2px solid #dee2e6;
+        white-space: nowrap;
+        vertical-align: middle;
+    }
+
+    .inventory-table tbody td {
+        padding: 15px 14px;
+        vertical-align: middle;
+        border-bottom: 1px solid #e9ecef;
+    }
+
+    .inventory-table tbody tr:last-child td {
+        border-bottom: none;
+    }
+
+    .inventory-table tbody tr:hover {
+        background-color: #f8f9fa;
+    }
+
+    .date-cell {
+        white-space: nowrap;
+        color: #6c757d;
+        font-size: 14px;
+    }
+
+    .product-cell {
+        font-weight: 600;
+        min-width: 160px;
+    }
+
+    .movement-badge {
+        display: inline-block;
+        padding: 6px 10px;
+        border-radius: 20px;
+        font-size: 13px;
+        font-weight: 600;
+        background-color: #e9ecef;
+        color: #495057;
+        white-space: nowrap;
+    }
+
+    .quantity-positive {
+        color: #198754;
+        font-weight: 700;
+    }
+
+    .quantity-negative {
+        color: #dc3545;
+        font-weight: 700;
+    }
+
+    .stock-number {
+        font-weight: 600;
+    }
+
+    .reference-cell {
+        min-width: 120px;
+        color: #495057;
+    }
+
+    .performed-by {
+        font-weight: 500;
+    }
+
+    .empty-state {
+        padding: 60px 20px !important;
+        text-align: center;
+    }
+
+    .empty-state h5 {
+        margin-bottom: 8px;
+        font-weight: 600;
+    }
+
+    @media (max-width: 768px) {
+        .inventory-report-container {
+            padding: 10px;
+        }
+
+        .inventory-table {
+            min-width: 950px;
+        }
+
+        .table-responsive {
+            overflow-x: auto;
+        }
+    }
+</style>
+
+
+<div class="inventory-report-container">
+
+    <!-- Report Header -->
+    <div class="report-header">
+        <h2>Inventory Movement Report</h2>
+
+        <p class="text-muted">
+            Track stock purchases and manual inventory adjustments.
+        </p>
+    </div>
+
+
+    <!-- Filters -->
+    <div class="card filter-card">
+
+        <div class="card-body">
+
+            <form method="GET">
+
+                <div class="row align-items-end">
+
+                    <!-- Product Filter -->
+                    <div class="col-md-5 mb-3 mb-md-0">
+
+                        <label for="product" class="form-label">
+                            Product
+                        </label>
+
+                        <select
+                            id="product"
+                            name="product"
+                            class="form-select"
+                        >
+                            <option value="">
+                                All Products
+                            </option>
+
+                            {% for product in products %}
+
+                                <option
+                                    value="{{ product.id }}"
+                                    {% if selected_product == product.id|stringformat:"s" %}
+                                        selected
+                                    {% endif %}
+                                >
+                                    {{ product.name }}
+                                </option>
+
+                            {% endfor %}
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- Movement Type Filter -->
+                    <div class="col-md-5 mb-3 mb-md-0">
+
+                        <label for="movement_type" class="form-label">
+                            Movement Type
+                        </label>
+
+                        <select
+                            id="movement_type"
+                            name="movement_type"
+                            class="form-select"
+                        >
+                            <option value="">
+                                All Movement Types
+                            </option>
+
+                            {% for value, label in movement_types %}
+
+                                <option
+                                    value="{{ value }}"
+                                    {% if selected_movement_type == value %}
+                                        selected
+                                    {% endif %}
+                                >
+                                    {{ label }}
+                                </option>
+
+                            {% endfor %}
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- Filter Button -->
+                    <div class="col-md-2">
+
+                        <button
+                            type="submit"
+                            class="btn btn-primary filter-button w-100"
+                        >
+                            Filter
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+
+    <!-- Inventory Movement Table -->
+    <div class="card table-card">
+
+        <div class="card-body">
+
+            <div class="table-responsive">
+
+                <table class="table inventory-table">
+
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Product</th>
+                            <th>Movement Type</th>
+                            <th class="text-center">Quantity</th>
+                            <th class="text-center">Stock Before</th>
+                            <th class="text-center">Stock After</th>
+                            <th>Reference</th>
+                            <th>Performed By</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        {% for movement in movements %}
+
+                            <tr>
+
+                                <!-- Date -->
+                                <td class="date-cell">
+                                    {{ movement.created_at|date:"d M Y, h:i A" }}
+                                </td>
+
+
+                                <!-- Product -->
+                                <td class="product-cell">
+                                    {{ movement.product.name }}
+                                </td>
+
+
+                                <!-- Movement Type -->
+                                <td>
+                                    <span class="movement-badge">
+                                        {{ movement.get_movement_type_display }}
+                                    </span>
+                                </td>
+
+
+                                <!-- Quantity -->
+                                <td class="text-center">
+
+                                    {% if movement.quantity > 0 %}
+
+                                        <span class="quantity-positive">
+                                            +{{ movement.quantity }}
+                                        </span>
+
+                                    {% else %}
+
+                                        <span class="quantity-negative">
+                                            {{ movement.quantity }}
+                                        </span>
+
+                                    {% endif %}
+
+                                </td>
+
+
+                                <!-- Stock Before -->
+                                <td class="text-center stock-number">
+                                    {{ movement.stock_before }}
+                                </td>
+
+
+                                <!-- Stock After -->
+                                <td class="text-center stock-number">
+                                    {{ movement.stock_after }}
+                                </td>
+
+
+                                <!-- Reference -->
+                                <td class="reference-cell">
+
+                                    {% if movement.reference %}
+                                        {{ movement.reference }}
+                                    {% else %}
+                                        -
+                                    {% endif %}
+
+                                </td>
+
+
+                                <!-- Performed By -->
+                                <td class="performed-by">
+
+                                    {% if movement.performed_by %}
+                                        {{ movement.performed_by.username }}
+                                    {% else %}
+                                        System
+                                    {% endif %}
+
+                                </td>
+
+                            </tr>
+
+                        {% empty %}
+
+                            <tr>
+
+                                <td
+                                    colspan="8"
+                                    class="empty-state"
+                                >
+
+                                    <h5>
+                                        No inventory movements found
+                                    </h5>
+
+                                    <p class="text-muted mb-0">
+                                        Inventory movement records will
+                                        appear here when stock changes occur.
+                                    </p>
+
+                                </td>
+
+                            </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

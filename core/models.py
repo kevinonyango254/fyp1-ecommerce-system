@@ -38,7 +38,81 @@ class Product(models.Model):
     def is_low_stock(self):
         return self.stock > 0 and self.stock <= self.low_stock_threshold
 
+class AdminNotification(models.Model):
+    NOTIFICATION_TYPES = [
+        ('low_stock', 'Low Stock'),
+        ('inventory', 'Inventory'),
+        ('system', 'System'),
+    ]
 
+    recipient = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='admin_notifications'
+    )
+
+    notification_type = models.CharField(
+        max_length=30,
+        choices=NOTIFICATION_TYPES,
+        default='system'
+    )
+
+    title = models.CharField(max_length=255)
+    message = models.TextField()
+
+    is_read = models.BooleanField(default=False)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.title} - {self.recipient.username}"
+
+class InventoryMovement(models.Model):
+    MOVEMENT_TYPES = [
+        ('purchase', 'Purchase'),
+        ('restock', 'Restock'),
+        ('adjustment', 'Adjustment'),
+        ('return', 'Return'),
+    ]
+
+    product = models.ForeignKey(
+        Product,
+        on_delete=models.CASCADE,
+        related_name='inventory_movements'
+    )
+
+    movement_type = models.CharField(
+        max_length=20,
+        choices=MOVEMENT_TYPES
+    )
+
+    quantity = models.IntegerField()
+
+    stock_before = models.IntegerField()
+    stock_after = models.IntegerField()
+
+    reference = models.CharField(
+        max_length=255,
+        blank=True,
+        null=True
+    )
+
+    performed_by = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='inventory_movements'
+    )
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return (
+            f"{self.product.name} - "
+            f"{self.movement_type} - "
+            f"{self.quantity}"
+        )
 class Advertisement(models.Model):
     title = models.CharField(max_length=255)
     subtitle = models.TextField(blank=True, null=True)
