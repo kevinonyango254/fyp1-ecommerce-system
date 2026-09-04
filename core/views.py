@@ -487,11 +487,17 @@ def admin_dashboard(request):
 
     orders = orders.order_by(sort)
 
+    unread_notifications_count = AdminNotification.objects.filter(
+        recipient=request.user,
+        is_read=False
+    ).count()
+
     return render(request, 'core/admin_dashboard.html', {
         'orders': orders,
         'search': search,
         'status': status,
         'sort': sort,
+        'unread_notifications_count': unread_notifications_count,
     })
 
 
